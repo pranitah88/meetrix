@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meetrix 2.0 — Meeting Intelligence & Team Productivity Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface2: #f1f5f9;
+    --surface3: #e2e8f0;
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --accent: #2563eb;
+    --accent2: #1d4ed8;
+    --accent-bg: #eff6ff;
+    --red: #ef4444;
+    --red-bg: #fef2f2;
+    --green: #10b981;
+    --green-bg: #ecfdf5;
+    --blue: #3b82f6;
+    --blue-bg: #eff6ff;
+    --orange: #f59e0b;
+    --orange-bg: #fffbeb;
+    --purple: #8b5cf6;
+    --purple-bg: #f5f3ff;
+    --text: #0f172a;
+    --text2: #334155;
+    --text3: #64748b;
+    --text4: #94a3b8;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.05);
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-size: 14px; line-height: 1.5; }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+  .sidebar { width: 240px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 20; }
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: var(--bg); }
+
+  /* ── LOGO ── */
+  .logo { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .logo-mark { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent), #1d4ed8); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; box-shadow: 0 2px 6px rgba(37,99,235,0.3); }
+  .logo-name { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; }
+  .version-tag { font-family: var(--mono); font-size: 10px; background: var(--accent-bg); color: var(--accent); padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+  .logo-sub { font-family: var(--mono); font-size: 9.5px; color: var(--text3); margin-top: 1px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  /* ── SYSTEM STATUS PILL ── */
+  .system-status { padding: 6px 14px; margin: 10px 14px 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--mono); font-size: 10.5px; display: flex; align-items: center; gap: 6px; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .status-dot.offline { background: var(--orange); }
+
+  /* ── NAVIGATION ── */
+  .nav-group { padding: 4px 0; }
+  .nav-section-label { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text4); padding: 8px 18px 4px; font-weight: 600; }
+  .nav-btn { display: flex; align-items: center; gap: 10px; padding: 8px 14px; cursor: pointer; font-family: var(--sans); font-size: 13.5px; font-weight: 500; color: var(--text2); border: none; background: none; width: calc(100% - 16px); text-align: left; border-radius: 7px; margin: 1px 8px; transition: all 0.12s; position: relative; }
+  .nav-btn:hover { color: var(--text); background: var(--surface2); }
+  .nav-btn.active { color: var(--accent); background: var(--accent-bg); font-weight: 600; }
+  .nav-btn svg { flex-shrink: 0; opacity: 0.75; }
+  .nav-btn.active svg { opacity: 1; }
+  .nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 10px; font-weight: 600; font-family: var(--mono); padding: 1px 6px; border-radius: 20px; }
+
+  /* ── USER SELECTOR IN SIDEBAR ── */
+  .user-section { margin-top: auto; padding: 14px 16px; border-top: 1px solid var(--border); background: var(--surface); }
+  .user-card { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .user-info-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .user-info-role { font-family: var(--mono); font-size: 10.5px; color: var(--text3); }
+  .user-select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 12.5px; font-weight: 500; padding: 6px 8px; cursor: pointer; outline: none; transition: border-color 0.12s; }
+
+  /* ── TOPBAR ── */
+  .topbar { padding: 14px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); position: sticky; top: 0; z-index: 15; box-shadow: var(--shadow-sm); }
+  .topbar-left { display: flex; flex-direction: column; }
+  .page-title { font-size: 19px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
+  .page-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .topbar-right { display: flex; gap: 10px; align-items: center; }
+
+  /* ── SEARCH INPUT ── */
+  .search-box { position: relative; width: 220px; }
+  .search-box input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 7px 10px 7px 30px; font-size: 12.5px; font-family: var(--sans); color: var(--text); outline: none; transition: all 0.15s; }
+  .search-box input:focus { width: 260px; border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+  .search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text4); pointer-events: none; }
+
+  /* ── BUTTONS ── */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 7px; font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.12s; white-space: nowrap; line-height: 1; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: white; box-shadow: 0 1px 4px rgba(37,99,235,0.2); }
+  .btn-primary:hover { background: var(--accent2); box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+  .btn-ghost { background: var(--surface); color: var(--text2); border: 1px solid var(--border2); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+  .btn-ai { background: var(--purple-bg); color: var(--purple); border: 1.5px solid #c4b5fd; }
+  .btn-ai:hover { background: #ede9fe; box-shadow: 0 2px 8px rgba(139,92,246,0.15); }
+  .btn-sm { padding: 6px 11px; font-size: 12px; }
+  .btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid #fecaca; }
+  .btn-danger:hover { background: #fee2e2; }
+
+  /* ── NOTIFICATION BELL ── */
+  .notif-bell-btn { position: relative; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text2); transition: all 0.12s; }
+  .notif-bell-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+  .notif-badge-dot { position: absolute; top: -3px; right: -3px; background: var(--red); color: white; font-size: 9px; font-weight: 700; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); font-family: var(--mono); }
+
+  /* ── NOTIFICATION DRAWER / PANEL ── */
+  .notif-panel { display: none; position: absolute; right: 28px; top: 64px; width: 360px; max-height: 480px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 100; flex-direction: column; animation: slideDown 0.15s ease; }
+  .notif-panel.open { display: flex; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .notif-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .notif-title { font-size: 13.5px; font-weight: 700; color: var(--text); }
+  .notif-list { overflow-y: auto; max-height: 380px; }
+  .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; cursor: pointer; transition: background 0.12s; font-size: 12.5px; }
+  .notif-item:hover { background: var(--surface2); }
+  .notif-item.unread { background: #f0f7ff; }
+  .notif-item.unread:hover { background: #e6f1fe; }
+  .notif-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: 5px; flex-shrink: 0; }
+  .notif-text { flex: 1; }
+  .notif-item-title { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .notif-item-sub { color: var(--text3); font-size: 11.5px; line-height: 1.4; }
+  .notif-item-time { font-family: var(--mono); font-size: 10px; color: var(--text4); margin-top: 4px; }
+
+  /* ── CONTENT VIEWS ── */
+  .content { padding: 24px 28px; flex: 1; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── STATS CARDS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 22px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.12s, box-shadow 0.12s; }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 10px 10px 0 0; }
+  .stat-card.accent::before { background: var(--accent); }
+  .stat-card.red::before { background: var(--red); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.orange::before { background: var(--orange); }
+  .stat-card.purple::before { background: var(--purple); }
+  .stat-num { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -1px; }
+  .stat-label { font-family: var(--mono); font-size: 10.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 6px; }
+  .stat-sub { font-size: 11px; color: var(--text4); margin-top: 4px; }
+
+  /* ── SECTION HEADERS & TOOLBARS ── */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
+  .section-title { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ''; display: block; width: 3px; height: 14px; background: var(--accent); border-radius: 2px; }
+  .filter-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; background: var(--surface); padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); }
+  .filter-label { font-family: var(--mono); font-size: 11px; color: var(--text3); text-transform: uppercase; }
+  .filter-select { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 5px 9px; font-size: 12.5px; color: var(--text); outline: none; cursor: pointer; }
+
+  /* ── MEETING CARDS GRID ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .meeting-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow-sm); position: relative; }
+  .meeting-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .meeting-card.pinned { border-left: 3px solid var(--accent); }
+  .meeting-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .meeting-title { font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.4; flex: 1; }
+  .pin-star { cursor: pointer; color: var(--text4); transition: color 0.12s; padding: 2px; }
+  .pin-star.active { color: var(--orange); }
+  .meeting-meta-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .meeting-date { font-family: var(--mono); font-size: 10.5px; color: var(--text3); }
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-upcoming { background: var(--blue-bg); color: var(--blue); border: 1px solid #bfdbfe; }
+  .badge-ongoing { background: var(--green-bg); color: var(--green); border: 1px solid #bbf7d0; }
+  .badge-completed { background: var(--surface2); color: var(--text3); border: 1px solid var(--border2); }
+  .badge-cancelled { background: var(--red-bg); color: var(--red); border: 1px solid #fecaca; }
+  .badge-type { background: var(--purple-bg); color: var(--purple); border: 1px solid #e9d5ff; }
+  .badge-recurring { background: var(--orange-bg); color: var(--orange); border: 1px solid #fed7aa; }
+
+  .meeting-metrics { display: flex; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text3); }
+  .metric-item { display: flex; align-items: center; gap: 4px; }
+  .attendees-avatars { display: flex; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .attendee-chip { font-size: 11px; font-family: var(--sans); background: var(--surface2); border: 1px solid var(--border); padding: 1px 7px; border-radius: 12px; color: var(--text2); margin-right: 4px; margin-bottom: 4px; display: inline-block; }
+
+  /* ── KANBAN BOARD ── */
+  .kanban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 14px; min-height: 520px; }
+  .kanban-col { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; flex-direction: column; }
+  .kanban-col-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid; }
+  .kanban-col.open .kanban-col-header { border-color: var(--blue); }
+  .kanban-col.progress .kanban-col-header { border-color: var(--orange); }
+  .kanban-col.completed .kanban-col-header { border-color: var(--green); }
+  .kanban-col-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .kanban-col-count { font-family: var(--mono); font-size: 11px; background: var(--surface); padding: 2px 7px; border-radius: 10px; color: var(--text3); border: 1px solid var(--border2); }
+  .kanban-tasks { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+  .kanban-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; box-shadow: var(--shadow-sm); transition: transform 0.12s, box-shadow 0.12s; cursor: pointer; }
+  .kanban-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border2); }
+  .kanban-card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+  .kanban-card-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; font-size: 11px; }
+  .priority-badge { font-family: var(--mono); font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+  .priority-Critical { background: var(--red-bg); color: var(--red); border: 1px solid #fecaca; }
+  .priority-High { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+  .priority-Medium { background: var(--orange-bg); color: var(--orange); border: 1px solid #fef3c7; }
+  .priority-Low { background: var(--blue-bg); color: var(--blue); border: 1px solid #dbeafe; }
+  .kanban-move-btns { display: flex; gap: 4px; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border); justify-content: flex-end; }
+
+  /* ── TASK PROGRESS BAR ── */
+  .prog-bar-wrap { width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; margin: 6px 0; overflow: hidden; }
+  .prog-bar-inner { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+
+  /* ── TABLES ── */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+  .panel-header { padding: 12px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
+  .panel-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); display: flex; align-items: center; gap: 7px; }
+  .panel-body { padding: 16px 18px; }
+  .task-table { width: 100%; border-collapse: collapse; }
+  .task-table th { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); padding: 9px 12px; text-align: left; border-bottom: 2px solid var(--border); background: var(--surface2); }
+  .task-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+  .task-row:hover td { background: var(--surface2); }
+  .task-row.overdue td { background: #fff8f8; }
+  .task-row.overdue td:first-child { border-left: 3px solid var(--red); }
+  .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 10px; font-weight: 700; flex-shrink: 0; }
+
+  /* ── MEETING DETAIL TABS ── */
+  .detail-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 18px; overflow-x: auto; }
+  .tab-btn { padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--text3); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── AI SUITE STYLES ── */
+  .ai-card { background: linear-gradient(135deg, #fdfcff, #f6f3ff); border: 1.5px solid #d8b4fe; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
+  .ai-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #ede9fe; padding-bottom: 8px; }
+  .ai-card-title { font-size: 13px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+  .ai-section-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--purple); margin: 10px 0 4px; font-weight: 600; }
+  .ai-text { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .ai-source-badge { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 4px; background: white; border: 1px solid #c4b5fd; color: var(--purple); font-weight: 600; }
+  .ai-qa-box { display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto; padding: 14px; background: white; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; }
+  .qa-bubble { padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; max-width: 85%; }
+  .qa-user { align-self: flex-end; background: var(--accent-bg); color: var(--accent); border: 1px solid #bfdbfe; }
+  .qa-assistant { align-self: flex-start; background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+  /* ── CHARTS ── */
+  .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .chart-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); }
+  .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .chart-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); }
+  .svg-chart { width: 100%; height: 180px; }
+
+  /* ── COMMENTS & COLLABORATION ── */
+  .comment-box { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .comment-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .comment-author { font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .comment-time { font-family: var(--mono); font-size: 10.5px; color: var(--text4); }
+  .comment-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* ── TEAM PROFILES ── */
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-sm); }
+  .team-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .team-card-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .team-card-role { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .team-card-dept { font-size: 11px; color: var(--text3); }
+  .team-stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: var(--surface2); padding: 10px; border-radius: 7px; text-align: center; margin-bottom: 12px; }
+  .team-stat-val { font-size: 16px; font-weight: 700; color: var(--text); font-family: var(--mono); }
+  .team-stat-lbl { font-size: 9.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); }
+
+  /* ── MODALS ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.45); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 560px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 24px 28px; box-shadow: var(--shadow-lg); animation: slideUp 0.18s ease; }
+  .modal-wide { width: 780px; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+  .modal-title { font-size: 17px; font-weight: 700; color: var(--text); }
+  .modal-close { background: var(--surface2); border: 1px solid var(--border); color: var(--text3); font-size: 13px; cursor: pointer; padding: 5px 8px; border-radius: 6px; transition: all 0.12s; }
+  .modal-close:hover { background: var(--red-bg); color: var(--red); border-color: #fecaca; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 5px; display: block; font-weight: 600; }
+  .form-input, .form-select, .form-textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 7px; color: var(--text); font-family: var(--sans); font-size: 13px; padding: 8px 11px; outline: none; transition: border-color 0.12s, box-shadow 0.12s; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+  .form-textarea { resize: vertical; min-height: 75px; line-height: 1.5; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  /* ── TOAST NOTIFICATION ── */
+  #toastContainer { position: fixed; bottom: 24px; right: 28px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { pointer-events: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; box-shadow: var(--shadow-lg); font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; animation: toastIn 0.2s ease forwards; max-width: 340px; }
+  .toast.success { border-left: 4px solid var(--green); color: var(--text); }
+  .toast.error { border-left: 4px solid var(--red); color: var(--red); }
+  .toast.info { border-left: 4px solid var(--accent); color: var(--text); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── PRINT & EXPORT STYLES ── */
+  @media print {
+    .sidebar, .topbar, .btn, .modal-overlay, #toastContainer, .kanban-move-btns { display: none !important; }
+    .main { overflow: visible !important; }
+    body { background: white !important; color: black !important; font-size: 12pt; }
+    .panel { box-shadow: none !important; border: 1px solid #ccc !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 15V5L10 11L17 5V15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="logo-name">Meetrix <span class="version-tag">2.0</span></div>
+          <div class="logo-sub">Intelligence Platform</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API CONNECTION STATUS -->
+    <div class="system-status" id="systemStatusPill">
+      <div class="status-dot" id="systemStatusDot"></div>
+      <span id="systemStatusText">Checking API...</span>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-section-label">Workspace</div>
+      <button class="nav-btn active" onclick="showView('overview')" id="nav-overview">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        Overview
+      </button>
+      <button class="nav-btn" onclick="showView('meetings')" id="nav-meetings">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 1V4M11 1V4M1.5 7H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Meetings
+      </button>
+      <button class="nav-btn" onclick="showView('kanban')" id="nav-kanban">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="4" height="12" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="6" y="2" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="2" width="4" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+        Kanban Board
+      </button>
+      <button class="nav-btn" onclick="showView('my-tasks')" id="nav-my-tasks">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 8.5L5.5 12L14 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        My Tasks
+        <span class="nav-badge" id="overdueBadge" style="display:none">0</span>
+      </button>
+      <button class="nav-btn" onclick="showView('team')" id="nav-team">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M1 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M12 14c0-2-1.5-3.5-3-3.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Team Profiles
+      </button>
+      <button class="nav-btn" onclick="showView('analytics')" id="nav-analytics">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 13L6 8L9 11L14 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 4H14V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Analytics
+      </button>
+    </div>
+
+    <!-- USER SWITCHER -->
+    <div class="user-section">
+      <div class="user-card">
+        <div class="avatar" id="currentUserAvatar" style="background:#eff6ff;color:#2563eb;border:1.5px solid #bfdbfe">P</div>
+        <div>
+          <div class="user-info-name" id="currentUserName">Pranita</div>
+          <div class="user-info-role" id="currentUserRole">Lead Architect</div>
+        </div>
+      </div>
+      <select class="user-select" id="userSwitcher" onchange="switchUser(this.value)">
+        <option value="Pranita">Pranita (Lead Architect)</option>
+        <option value="Gargi">Gargi (Product Designer)</option>
+        <option value="Riya">Riya (QA Lead)</option>
+        <option value="Arjun">Arjun (Technical Writer)</option>
+        <option value="Siddharth">Siddharth (Database Engineer)</option>
+      </select>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="page-title" id="pageTitle">Executive Overview</div>
+        <div class="page-subtitle" id="pageSubtitle">Real-time meeting intelligence and team delivery metrics</div>
+      </div>
+      <div class="topbar-right">
+        <!-- GLOBAL SEARCH INPUT -->
+        <div class="search-box">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="text" id="globalSearchInput" placeholder="Search meetings, tasks..." oninput="handleGlobalSearch(this.value)">
+        </div>
+
+        <!-- NOTIFICATION BELL -->
+        <button class="notif-bell-btn" onclick="toggleNotifPanel()" title="Notifications">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a3.5 3.5 0 00-3.5 3.5v2.8L3 10.5V11h10v-.5l-1.5-2.2V5.5A3.5 3.5 0 008 2zM6.5 12a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="notif-badge-dot" id="notifBadge" style="display:none">0</span>
+        </button>
+
+        <!-- EXPORT CSV -->
+        <button class="btn btn-ghost btn-sm" onclick="exportTasksCSV()" title="Export Action Items as CSV">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 14H13M8 2V10M8 10L5 7M8 10L11 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export CSV
+        </button>
+
+        <!-- NEW MEETING BUTTON -->
+        <button class="btn btn-primary btn-sm" onclick="openMeetingModal()">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          New Meeting
+        </button>
+      </div>
+
+      <!-- NOTIFICATIONS DROPDOWN PANEL -->
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-header">
+          <div class="notif-title">Notifications & Reminders</div>
+          <button class="btn btn-ghost btn-sm" onclick="markAllNotifsRead()" style="font-size:11px;padding:3px 8px">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+    </div>
+
+    <!-- MAIN VIEWS CONTAINER -->
+    <div class="content">
+
+      <!-- VIEW 1: EXECUTIVE OVERVIEW -->
+      <div class="view active" id="view-overview">
+        <!-- STATS CARDS -->
+        <div class="stats-grid" id="overviewStats"></div>
+
+        <!-- CHARTS GRID -->
+        <div class="charts-grid">
+          <div class="chart-panel">
+            <div class="chart-header">
+              <div class="chart-title">Meetings & Velocity Timeline</div>
+              <span class="badge badge-upcoming">Past 6 Months</span>
+            </div>
+            <div class="svg-chart" id="timelineChart"></div>
+          </div>
+          <div class="chart-panel">
+            <div class="chart-header">
+              <div class="chart-title">Task Priority Distribution</div>
+              <span class="badge badge-type">Deliverables</span>
+            </div>
+            <div class="svg-chart" id="priorityChart"></div>
+          </div>
+        </div>
+
+        <!-- RECENT MEETINGS & OVERDUE ACTIONS -->
+        <div class="section-header">
+          <div class="section-title">Active & Recent Meetings</div>
+          <button class="btn btn-ghost btn-sm" onclick="showView('meetings')">View All Meetings →</button>
+        </div>
+        <div class="cards-grid" id="recentMeetingsGrid" style="margin-bottom:24px"></div>
+
+        <div class="section-header">
+          <div class="section-title" style="color:var(--red)">Overdue Deliverables Requiring Attention</div>
+        </div>
+        <div class="panel">
+          <table class="task-table">
+            <thead><tr><th>Action Item</th><th>Assignee</th><th>Deadline</th><th>Priority</th><th>Status</th></tr></thead>
+            <tbody id="overviewOverdueBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VIEW 2: MEETINGS HUB -->
+      <div class="view" id="view-meetings">
+        <div class="filter-bar">
+          <span class="filter-label">Status:</span>
+          <select class="filter-select" id="filterMeetingStatus" onchange="renderMeetingsHub()">
+            <option value="All">All Statuses</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="Completed">Completed</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+
+          <span class="filter-label" style="margin-left:10px">Template:</span>
+          <select class="filter-select" id="filterMeetingType" onchange="renderMeetingsHub()">
+            <option value="All">All Types</option>
+            <option value="Team Standup">Team Standup</option>
+            <option value="Project Planning">Project Planning</option>
+            <option value="Sprint Review">Sprint Review</option>
+            <option value="Brainstorming">Brainstorming</option>
+            <option value="General Discussion">General Discussion</option>
+          </select>
+        </div>
+
+        <div class="cards-grid" id="allMeetingsGrid"></div>
+      </div>
+
+      <!-- VIEW 3: KANBAN TASK BOARD -->
+      <div class="view" id="view-kanban">
+        <div class="filter-bar">
+          <span class="filter-label">Priority:</span>
+          <select class="filter-select" id="kanbanPriorityFilter" onchange="renderKanban()">
+            <option value="All">All Priorities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+
+          <span class="filter-label" style="margin-left:10px">Assignee:</span>
+          <select class="filter-select" id="kanbanAssigneeFilter" onchange="renderKanban()">
+            <option value="All">All Team Members</option>
+            <option value="Pranita">Pranita</option>
+            <option value="Gargi">Gargi</option>
+            <option value="Riya">Riya</option>
+            <option value="Arjun">Arjun</option>
+            <option value="Siddharth">Siddharth</option>
+          </select>
+        </div>
+
+        <div class="kanban-grid">
+          <!-- OPEN COLUMN -->
+          <div class="kanban-col open">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title"><span style="color:var(--blue)">●</span> Open</div>
+              <span class="kanban-col-count" id="countOpen">0</span>
+            </div>
+            <div class="kanban-tasks" id="colOpen"></div>
+          </div>
+
+          <!-- IN PROGRESS COLUMN -->
+          <div class="kanban-col progress">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title"><span style="color:var(--orange)">●</span> In Progress</div>
+              <span class="kanban-col-count" id="countProgress">0</span>
+            </div>
+            <div class="kanban-tasks" id="colProgress"></div>
+          </div>
+
+          <!-- COMPLETED COLUMN -->
+          <div class="kanban-col completed">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title"><span style="color:var(--green)">●</span> Completed</div>
+              <span class="kanban-col-count" id="countCompleted">0</span>
+            </div>
+            <div class="kanban-tasks" id="colCompleted"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: MY TASKS (PERSONAL DASHBOARD) -->
+      <div class="view" id="view-my-tasks">
+        <div class="stats-grid" id="myTaskStats"></div>
+        <div class="section-header">
+          <div class="section-title">My Assigned Deliverables</div>
+        </div>
+        <div class="panel">
+          <table class="task-table">
+            <thead><tr><th>Action Item</th><th>Meeting</th><th>Deadline</th><th>Priority</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="myTasksTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VIEW 5: MEETING DETAIL VIEW -->
+      <div class="view" id="view-detail">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <button class="btn btn-ghost btn-sm" onclick="showView('meetings')">
+            ← Back to Meetings
+          </button>
+          <div style="display:flex;gap:6px" id="detailTopActions"></div>
+        </div>
+
+        <!-- MEETING HEADER CARD -->
+        <div id="detailHeaderCard"></div>
+
+        <!-- DETAIL TABS -->
+        <div class="detail-tabs">
+          <button class="tab-btn active" onclick="switchDetailTab('tab-overview', this)">Overview & Agenda</button>
+          <button class="tab-btn" onclick="switchDetailTab('tab-tasks', this)">Action Items (<span id="detailTaskCount">0</span>)</button>
+          <button class="tab-btn" onclick="switchDetailTab('tab-insights', this)">Topic Insights</button>
+          <button class="tab-btn" onclick="switchDetailTab('tab-ai', this)">AI Intelligence Suite</button>
+          <button class="tab-btn" onclick="switchDetailTab('tab-collaboration', this)">Discussions</button>
+          <button class="tab-btn" onclick="switchDetailTab('tab-attendance', this)">Attendance</button>
+          <button class="tab-btn" onclick="switchDetailTab('tab-notes', this)">Meeting Notes</button>
+        </div>
+
+        <!-- TAB 1: OVERVIEW & AGENDA -->
+        <div class="tab-content active" id="tab-overview">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="panel">
+              <div class="panel-header"><div class="panel-title">Meeting Agenda</div></div>
+              <div class="panel-body"><div style="white-space:pre-wrap;font-size:13px;color:var(--text2);line-height:1.7" id="detailAgendaText"></div></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><div class="panel-title">Recorded Decisions</div><button class="btn btn-ghost btn-sm" onclick="openDecisionModal()">+ Decision</button></div>
+              <div class="panel-body" id="detailDecisionsList"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Meeting Activity Timeline</div></div>
+            <div class="panel-body" id="detailHistoryTimeline"></div>
+          </div>
+        </div>
+
+        <!-- TAB 2: TASKS -->
+        <div class="tab-content" id="tab-tasks">
+          <div class="section-header">
+            <div class="section-title">Meeting Deliverables</div>
+            <button class="btn btn-primary btn-sm" onclick="openTaskModal()">+ Add Action Item</button>
+          </div>
+          <div class="panel">
+            <table class="task-table">
+              <thead><tr><th>Action Item</th><th>Assignee</th><th>Deadline</th><th>Priority</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="detailTasksTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: INSIGHTS -->
+        <div class="tab-content" id="tab-insights">
+          <div class="section-header">
+            <div class="section-title">Topic-by-Topic Insights</div>
+            <button class="btn btn-ai btn-sm" onclick="openInsightsModal()">+ Add Topic Insights</button>
+          </div>
+          <div id="detailInsightsList"></div>
+        </div>
+
+        <!-- TAB 4: AI INTELLIGENCE SUITE -->
+        <div class="tab-content" id="tab-ai">
+          <div class="ai-card">
+            <div class="ai-card-header">
+              <div class="ai-card-title"><span style="color:var(--purple)">✦</span> Smart Meeting Summary</div>
+              <button class="btn btn-ai btn-sm" onclick="triggerSmartSummary()">Synthesize Summary</button>
+            </div>
+            <div id="aiSummaryResult" class="ai-text">Click "Synthesize Summary" to generate a comprehensive, structured briefing.</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="ai-card">
+              <div class="ai-card-header">
+                <div class="ai-card-title"><span style="color:var(--purple)">✦</span> AI Discussion Analysis</div>
+                <button class="btn btn-ai btn-sm" onclick="triggerDiscussionAnalysis()">Analyze</button>
+              </div>
+              <div id="aiAnalysisResult" class="ai-text">Analyzes consensus, divergent stances, and standout solutions.</div>
+            </div>
+
+            <div class="ai-card">
+              <div class="ai-card-header">
+                <div class="ai-card-title"><span style="color:var(--purple)">✦</span> Decision Intelligence</div>
+                <button class="btn btn-ai btn-sm" onclick="triggerDecisionIntel()">Explain</button>
+              </div>
+              <div id="aiDecisionIntelResult" class="ai-text">Explains the rationale and supporting discussions behind each logged decision.</div>
+            </div>
+          </div>
+
+          <!-- ASK YOUR MEETING CHATBOX -->
+          <div class="ai-card">
+            <div class="ai-card-header">
+              <div class="ai-card-title"><span style="color:var(--purple)">✦</span> Ask Your Meeting Assistant</div>
+              <span class="badge badge-type">Context-Grounded Q&A</span>
+            </div>
+            <div class="ai-qa-box" id="meetingQABox">
+              <div class="qa-bubble qa-assistant">
+                Hi! Ask me anything about this meeting — for example: <em>"What tasks were assigned?"</em>, <em>"What decisions were made?"</em>, or <em>"What did Gargi recommend?"</em>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <input type="text" class="form-input" id="meetingQAInput" placeholder="Ask a question about this meeting..." onkeydown="if(event.key==='Enter')askMeetingQuestion()">
+              <button class="btn btn-primary btn-sm" onclick="askMeetingQuestion()">Ask</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: COLLABORATION & DISCUSSIONS -->
+        <div class="tab-content" id="tab-collaboration">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Meeting Discussion & @Mentions</div></div>
+            <div class="panel-body">
+              <div id="commentsList" style="margin-bottom:14px"></div>
+              <div style="display:flex;gap:8px">
+                <input type="text" class="form-input" id="newCommentInput" placeholder="Write a comment or mention @Pranita, @Gargi..." onkeydown="if(event.key==='Enter')postComment()">
+                <button class="btn btn-primary btn-sm" onclick="postComment()">Post</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: ATTENDANCE -->
+        <div class="tab-content" id="tab-attendance">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Attendee Roll Call & Participation</div></div>
+            <div class="panel-body">
+              <div id="attendanceRollCall"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 7: NOTES -->
+        <div class="tab-content" id="tab-notes">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Shared Meeting Notes & Scratchpad</div><button class="btn btn-ghost btn-sm" onclick="saveMeetingNotes()">Save Notes</button></div>
+            <div class="panel-body">
+              <textarea class="form-textarea" id="detailNotesText" style="min-height:220px;font-family:var(--sans);font-size:13.5px" placeholder="Capture meeting notes, links, or follow-ups here..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 6: TEAM PROFILES -->
+      <div class="view" id="view-team">
+        <div class="section-header">
+          <div class="section-title">Meetrix Team Members</div>
+        </div>
+        <div class="team-grid" id="teamCardsGrid"></div>
+      </div>
+
+      <!-- VIEW 7: ANALYTICS & EFFECTIVENESS -->
+      <div class="view" id="view-analytics">
+        <div class="stats-grid" id="analyticsStatsGrid"></div>
+        <div class="panel" style="margin-bottom:16px">
+          <div class="panel-header"><div class="panel-title">Team Member Productivity Leaderboard</div></div>
+          <table class="task-table">
+            <thead><tr><th>Member</th><th>Role</th><th>Assigned</th><th>Completed</th><th>Pending</th><th>Overdue</th><th>Completion %</th></tr></thead>
+            <tbody id="analyticsLeaderboardBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- 1. NEW MEETING MODAL -->
+<div class="modal-overlay" id="meetingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Schedule New Meeting</div>
+      <button class="modal-close" onclick="closeModal('meetingModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Meeting Title</label>
+      <input class="form-input" id="mTitle" placeholder="e.g. Sprint 3 Planning">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Template / Meeting Type</label>
+        <select class="form-select" id="mType" onchange="applyMeetingTemplate(this.value)">
+          <option value="General Discussion">General Discussion</option>
+          <option value="Team Standup">Team Standup</option>
+          <option value="Project Planning">Project Planning</option>
+          <option value="Sprint Review">Sprint Review</option>
+          <option value="Brainstorming">Brainstorming</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Recurring Schedule</label>
+        <select class="form-select" id="mRecurring">
+          <option value="None">None (One-time)</option>
+          <option value="Daily">Daily</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="mDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Attendees (comma-separated)</label>
+        <input class="form-input" id="mAttendees" placeholder="Pranita, Gargi, Riya">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Agenda & Topics (prefixed with "Topic: ")</label>
+      <textarea class="form-textarea" id="mAgenda" placeholder="Topic: Project Goals&#10;Topic: Architecture&#10;Topic: Timeline"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('meetingModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewMeeting()">Schedule Meeting</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. EDIT / RESCHEDULE MEETING MODAL -->
+<div class="modal-overlay" id="editMeetingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit / Reschedule Meeting</div>
+      <button class="modal-close" onclick="closeModal('editMeetingModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Meeting Title</label>
+      <input class="form-input" id="editMTitle">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="editMDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="editMStatus">
+          <option value="Upcoming">Upcoming</option>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Completed">Completed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Agenda</label>
+      <textarea class="form-textarea" id="editMAgenda"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('editMeetingModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditMeeting()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. CANCEL MEETING MODAL -->
+<div class="modal-overlay" id="cancelMeetingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--red)">Cancel Meeting</div>
+      <button class="modal-close" onclick="closeModal('cancelMeetingModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Reason for Cancellation</label>
+      <textarea class="form-textarea" id="cancelReasonInput" placeholder="e.g. Key stakeholders unavailable; postponed to next week..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('cancelMeetingModal')">Back</button>
+      <button class="btn btn-danger" onclick="confirmCancelMeeting()">Confirm Cancellation</button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. ACTION ITEM / TASK MODAL -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="taskModalTitle">Add Action Item</div>
+      <button class="modal-close" onclick="closeModal('taskModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Task Description</label>
+      <input class="form-input" id="tDesc" placeholder="What deliverable needs to be completed?">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Assignee</label>
+        <select class="form-select" id="tAssignee">
+          <option value="Pranita">Pranita</option>
+          <option value="Gargi">Gargi</option>
+          <option value="Riya">Riya</option>
+          <option value="Arjun">Arjun</option>
+          <option value="Siddharth">Siddharth</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Priority</label>
+        <select class="form-select" id="tPriority">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+          <option value="Critical">Critical</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Deadline</label>
+        <input class="form-input" type="date" id="tDeadline">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="tStatus">
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Progress (%): <span id="tProgressVal">0</span>%</label>
+      <input type="range" min="0" max="100" value="0" id="tProgress" style="width:100%" oninput="document.getElementById('tProgressVal').textContent=this.value">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Additional Notes</label>
+      <textarea class="form-textarea" id="tNotes" placeholder="Context, PR links, blockers..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('taskModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTaskModal()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- 5. DECISION MODAL -->
+<div class="modal-overlay" id="decisionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Record Team Decision</div>
+      <button class="modal-close" onclick="closeModal('decisionModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">What was agreed upon?</label>
+      <textarea class="form-textarea" id="dText" placeholder="e.g. Adopted Zustand for client state management..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('decisionModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDecisionModal()">Save Decision</button>
+    </div>
+  </div>
+</div>
+
+<!-- 6. INSIGHTS MODAL -->
+<div class="modal-overlay" id="insightsModal">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Participant Topic Insights</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text3)" id="insSub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('insightsModal')">✕</button>
+    </div>
+    <div id="insStep1">
+      <div class="form-group">
+        <label class="form-label">Choose a topic to gather insights on</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="insChips"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="customInsTopic" placeholder="Or enter new topic...">
+        <button class="btn btn-ghost btn-sm" onclick="addCustomInsTopic()">+ Add</button>
+      </div>
+    </div>
+    <div id="insStep2" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--purple-bg);padding:10px 14px;border-radius:8px;border:1px solid #d8b4fe;margin-bottom:14px">
+        <div>
+          <div style="font-weight:700;color:var(--purple)" id="insSelectedTopicTitle">Topic</div>
+          <div style="font-size:11px;color:var(--text3)">Input perspectives from meeting attendees:</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="backToInsStep1()">← Back to Topics</button>
+      </div>
+      <div id="insRowsContainer"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('insightsModal')">Cancel</button>
+      <button class="btn btn-ai" id="saveInsBtn" onclick="saveAllInsights()" style="display:none">Save Insights</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer"></div>
+
+<!-- ==================== LOGIC & SCRIPTS ==================== -->
+<script>
+// Core Application State
+let meetings = [];
+let activeMeetingId = null;
+let currentView = 'overview';
+let activeUser = 'Pranita';
+let notifications = [];
+let editingTaskId = null;
+let isBackendConnected = false;
+
+const USER_ROLES = {
+  'Pranita': 'Lead Architect',
+  'Gargi': 'Product Designer',
+  'Riya': 'QA Lead',
+  'Arjun': 'Technical Writer',
+  'Siddharth': 'Database Engineer'
+};
+
+const USER_COLORS = {
+  'Pranita': '#2563eb',
+  'Gargi': '#10b981',
+  'Riya': '#ec4899',
+  'Arjun': '#f59e0b',
+  'Siddharth': '#8b5cf6'
+};
+
+// Utilities
+function today() { return new Date().toISOString().split('T')[0]; }
+function past(d) { const dt = new Date(); dt.setDate(dt.getDate() - d); return dt.toISOString().split('T')[0]; }
+function future(d) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0]; }
+function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function isOverdue(t) { return t.status !== 'Completed' && t.deadline && new Date(t.deadline) < new Date(today()); }
+function allTasks() {
+  return meetings.flatMap(m => (m.tasks||[]).map(t => ({
+    ...t,
+    meetingTitle: m.title,
+    meetingId: m._id || m.id,
+    desc: t.desc || t.description,
+    assignee: t.assigneeName || (t.assignee && t.assignee.name ? t.assignee.name : t.assignee)
+  })));
+}
+
+function avatarStyle(name) {
+  const c = USER_COLORS[name] || '#64748b';
+  return `background:${c}15;color:${c};border:1.5px solid ${c}40;`;
+}
+function initials(name) {
+  return (name||'U').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+// Toast System
+function showToast(msg, type='success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span> <div>${msg}</div>`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 200); }, 3200);
+}
+
+// ── BACKEND API INTEGRATION LAYER ──
+const API_BASE = (window.location.port === '3000' || window.location.protocol === 'file:') ? 'http://localhost:5000' : '';
+
+async function apiCall(endpoint, options = {}) {
+  const token = localStorage.getItem('meetrix_token');
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  try {
+    const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+    const res = await fetch(url, { ...options, headers });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    return await res.json();
+  } catch (err) {
+    console.warn(`[Meetrix API] ${options.method || 'GET'} ${endpoint} error:`, err.message);
+    return null;
+  }
+}
+
+// Authenticate Active User via API
+async function loginUser(userName) {
+  const email = `${userName.toLowerCase()}@meetrix.dev`;
+  const result = await apiCall('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password: 'password123' })
+  });
+  if (result && result.token) {
+    localStorage.setItem('meetrix_token', result.token);
+    return true;
+  }
+  return false;
+}
+
+// Notifications
+function toggleNotifPanel() {
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+
+async function markAllNotifsRead() {
+  notifications.forEach(n => n.read = true);
+  if (isBackendConnected) {
+    await apiCall('/api/notifications/read-all', { method: 'POST' });
+  }
+  saveLocalState();
+  renderNotifs();
+  showToast('All notifications marked as read', 'info');
+}
+
+function renderNotifs() {
+  const unread = notifications.filter(n => !n.read).length;
+  const badge = document.getElementById('notifBadge');
+  if (unread > 0) {
+    badge.textContent = unread;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+
+  const list = document.getElementById('notifList');
+  if (!notifications.length) {
+    list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text4);font-size:12px">No notifications</div>`;
+    return;
+  }
+  list.innerHTML = notifications.map((n, idx) => `
+    <div class="notif-item ${n.read?'':'unread'}" onclick="handleNotifClick(${idx})">
+      <div class="notif-dot" style="${n.read?'opacity:0':''}"></div>
+      <div class="notif-text">
+        <div class="notif-item-title">${n.title}</div>
+        <div class="notif-item-sub">${n.message}</div>
+        <div class="notif-item-time">${n.time || fmtDate(n.createdAt) || 'Just now'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function handleNotifClick(idx) {
+  const n = notifications[idx];
+  if(n) {
+    n.read = true;
+    if (isBackendConnected && n._id) {
+      await apiCall(`/api/notifications/${n._id}/read`, { method: 'PATCH' });
+    }
+    saveLocalState();
+    renderNotifs();
+    toggleNotifPanel();
+    if(n.linkType === 'task' || (n.type && n.type.startsWith('task'))) {
+      const parentMeeting = meetings.find(m => (m.tasks||[]).some(t => (t._id || t.id) == n.linkId));
+      if (parentMeeting) {
+        openDetail(parentMeeting._id || parentMeeting.id);
+      } else {
+        showView('my-tasks');
+      }
+    } else if(n.linkId) {
+      openDetail(n.linkId);
+    } else if(n.meetingId) {
+      openDetail(n.meetingId);
+    } else if(n.view) {
+      showView(n.view);
+    }
+  }
+}
+
+// Modal management
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Template Agendas
+const MEETING_TEMPLATES = {
+  'Team Standup': 'Topic: What did we accomplish yesterday?\nTopic: What are we committing to today?\nTopic: Blockers and immediate dependencies',
+  'Project Planning': 'Topic: Core objective & user requirements\nTopic: Architecture & technical constraints\nTopic: Milestone schedule & resource allocation',
+  'Sprint Review': 'Topic: Demo of sprint deliverables\nTopic: QA & bug metrics\nTopic: Retrospective & process improvements',
+  'Brainstorming': 'Topic: Problem statement definition\nTopic: Divergent ideation & solution alternatives\nTopic: Feasibility scoring & action items',
+  'General Discussion': 'Topic: Agenda items review\nTopic: Open team discussion\nTopic: Next steps & task assignment'
+};
+
+function applyMeetingTemplate(type) {
+  const ag = document.getElementById('mAgenda');
+  if(MEETING_TEMPLATES[type]) { ag.value = MEETING_TEMPLATES[type]; }
+}
+
+// Global Search
+function handleGlobalSearch(q) {
+  if(!q || !q.trim()) {
+    renderMeetingsHub();
+    return;
+  }
+  const term = q.trim().toLowerCase();
+  const matchedMeetings = meetings.filter(m =>
+    m.title.toLowerCase().includes(term) ||
+    (m.agenda||'').toLowerCase().includes(term) ||
+    (m.decisions||[]).some(d => d.toLowerCase().includes(term))
+  );
+
+  if(currentView !== 'meetings') {
+    showView('meetings');
+  }
+  document.getElementById('allMeetingsGrid').innerHTML = matchedMeetings.length ? matchedMeetings.map(meetingCardHTML).join('') : `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);font-family:var(--mono)">No matching records found for "${q}".</div>`;
+}
+
+// User Switching
+async function switchUser(u) {
+  activeUser = u;
+  document.getElementById('currentUserName').textContent = u;
+  document.getElementById('currentUserRole').textContent = USER_ROLES[u] || 'Team Member';
+  const av = document.getElementById('currentUserAvatar');
+  av.textContent = initials(u);
+  av.style.cssText = avatarStyle(u);
+
+  if (isBackendConnected) {
+    await loginUser(u);
+    await syncNotificationsFromAPI();
+  }
+  showToast(`Switched active profile to ${u}`, 'info');
+  renderAll();
+}
+
+// View Switching
+function showView(v) {
+  currentView = v;
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(`view-${v}`);
+  if(target) target.classList.add('active');
+  const btn = document.getElementById(`nav-${v}`);
+  if(btn) btn.classList.add('active');
+
+  const titles = {
+    'overview': ['Executive Overview', 'Real-time meeting intelligence and team delivery metrics'],
+    'meetings': ['Meetings Hub', 'Schedule, track, and review team sessions'],
+    'kanban': ['Kanban Task Board', 'Visualize workflow and move tasks across stages'],
+    'my-tasks': ['My Deliverables', `Personal accountability dashboard for ${activeUser}`],
+    'team': ['Team Profiles', 'Member roles, workload, and performance summaries'],
+    'analytics': ['Productivity Analytics', 'Meeting effectiveness and team delivery metrics'],
+    'detail': ['Meeting Workspace', 'Collaborative notes, AI insights, and action items']
+  };
+
+  const [t, s] = titles[v] || ['Meetrix 2.0', 'Meeting Intelligence'];
+  document.getElementById('pageTitle').textContent = t;
+  document.getElementById('pageSubtitle').textContent = s;
+  renderAll();
+}
+
+// Local Storage Persistence Helpers
+function saveLocalState() {
+  try {
+    localStorage.setItem('meetrix_2_meetings', JSON.stringify(meetings));
+    localStorage.setItem('meetrix_2_notifications', JSON.stringify(notifications));
+  } catch(e) {}
+}
+
+// Seed Initial Data (Fallback)
+function initSeedData() {
+  const saved = localStorage.getItem('meetrix_2_meetings');
+  if (saved) {
+    try {
+      meetings = JSON.parse(saved);
+      const savedNotifs = localStorage.getItem('meetrix_2_notifications');
+      if (savedNotifs) notifications = JSON.parse(savedNotifs);
+      return;
+    } catch(e) {}
+  }
+
+  meetings = [
+    {
+      id: 1,
+      _id: '1',
+      title: 'Meetrix Hackathon Kickoff',
+      date: past(5),
+      status: 'Completed',
+      type: 'Team Standup',
+      recurring: 'Weekly',
+      pinned: true,
+      agenda: 'Topic: Tech stack selection\nTopic: Role division\nTopic: Timeline & milestones',
+      attendees: ['Pranita', 'Gargi', 'Riya', 'Arjun'],
+      attendeeNames: ['Pranita', 'Gargi', 'Riya', 'Arjun'],
+      attendance: [
+        { name: 'Pranita', status: 'Present' },
+        { name: 'Gargi', status: 'Present' },
+        { name: 'Riya', status: 'Present' },
+        { name: 'Arjun', status: 'Late' }
+      ],
+      decisions: [
+        'Pranita leads backend, Gargi handles UI, Riya does testing, Arjun manages docs.',
+        'Tech stack: Node.js + Express + MongoDB + React.',
+        'First demo checkpoint in 2 weeks.'
+      ],
+      tasks: [
+        { id: 101, _id: '101', desc: 'Set up Express project structure and API routes', description: 'Set up Express project structure and API routes', assignee: 'Pranita', assigneeName: 'Pranita', deadline: past(1), status: 'Completed', priority: 'High', progress: 100, notes: 'Pushed to repo' },
+        { id: 102, _id: '102', desc: 'Design wireframes for dashboard UI', description: 'Design wireframes for dashboard UI', assignee: 'Gargi', assigneeName: 'Gargi', deadline: future(2), status: 'In Progress', priority: 'Critical', progress: 65, notes: 'In final review' },
+        { id: 103, _id: '103', desc: 'Write test cases for login and task flows', description: 'Write test cases for login and task flows', assignee: 'Riya', assigneeName: 'Riya', deadline: past(2), status: 'Open', priority: 'High', progress: 20, notes: 'Need auth endpoints' },
+        { id: 104, _id: '104', desc: 'Create project README and contribution guide', description: 'Create project README and contribution guide', assignee: 'Arjun', assigneeName: 'Arjun', deadline: future(4), status: 'Open', priority: 'Medium', progress: 10, notes: 'Drafting structure' },
+      ],
+      insights: [
+        { topic: 'Tech stack selection', author: 'Pranita', authorName: 'Pranita', text: 'Node.js with Express is fast to set up and MongoDB gives us zero infra management needed for high agility.', timestamp: past(5) },
+        { topic: 'Tech stack selection', author: 'Gargi', authorName: 'Gargi', text: 'React with Vite is the fastest iteration loop. Component reuse will save hours once the design system is up.', timestamp: past(5) },
+        { topic: 'Tech stack selection', author: 'Riya', authorName: 'Riya', text: 'Mongoose schemas make testing predictable. We should define the Meeting and Task models early.', timestamp: past(5) },
+        { topic: 'Role division', author: 'Pranita', authorName: 'Pranita', text: 'I can handle Express + Mongoose integration. Suggest 15-min standups daily so nobody gets blocked.', timestamp: past(5) }
+      ],
+      comments: [
+        { author: 'Gargi', authorName: 'Gargi', text: '@Pranita Color design tokens and typography are finalized in CSS variables.', time: '4 days ago' }
+      ],
+      notes: 'Everyone agreed on the 2-week checkpoint. Daily check-ins at 10 AM.',
+      aiSummary: 'Kickoff meeting established technical foundation and individual roles. Node.js + React chosen. Key priority is working MVP in 14 days.',
+      history: [
+        { action: 'Meeting scheduled', by: 'Pranita', at: past(5) },
+        { action: '3 decisions recorded', by: 'Pranita', at: past(5) }
+      ]
+    },
+    {
+      id: 2,
+      _id: '2',
+      title: 'Database Design Review',
+      date: past(3),
+      status: 'Completed',
+      type: 'Project Planning',
+      recurring: 'None',
+      pinned: false,
+      agenda: 'Topic: MongoDB schema design\nTopic: Indexing strategy\nTopic: Submission deadline plan',
+      attendees: ['Pranita', 'Gargi', 'Siddharth'],
+      attendeeNames: ['Pranita', 'Gargi', 'Siddharth'],
+      attendance: [
+        { name: 'Pranita', status: 'Present' },
+        { name: 'Gargi', status: 'Present' },
+        { name: 'Siddharth', status: 'Present' }
+      ],
+      decisions: [
+        'Use embedded documents for tasks and insights inside Meeting schema.',
+        'Add compound indexes on meeting date and assignee fields.',
+        'Schema documentation submitted by end of week.'
+      ],
+      tasks: [
+        { id: 105, _id: '105', desc: 'Finalize Mongoose schemas and push to repo', description: 'Finalize Mongoose schemas and push to repo', assignee: 'Pranita', assigneeName: 'Pranita', deadline: past(1), status: 'Completed', priority: 'Critical', progress: 100, notes: 'Merged' },
+        { id: 106, _id: '106', desc: 'Document all collection schemas with field descriptions', description: 'Document all collection schemas with field descriptions', assignee: 'Gargi', assigneeName: 'Gargi', deadline: future(1), status: 'In Progress', priority: 'Medium', progress: 75, notes: 'ER diagram ready' },
+        { id: 107, _id: '107', desc: 'Submit schema design to faculty portal', description: 'Submit schema design to faculty portal', assignee: 'Siddharth', assigneeName: 'Siddharth', deadline: past(3), status: 'Open', priority: 'High', progress: 0, notes: 'Awaiting submission link' },
+      ],
+      insights: [
+        { topic: 'MongoDB schema design', author: 'Pranita', authorName: 'Pranita', text: 'Embedding tasks inside meetings is the right call — we always query tasks in the context of a meeting. No need for a separate collection.', timestamp: past(3) },
+        { topic: 'Indexing strategy', author: 'Siddharth', authorName: 'Siddharth', text: 'Index on createdAt descending for the meetings list. Compound index on assignee + status for tasks.', timestamp: past(3) }
+      ],
+      comments: [],
+      notes: 'NoSQL document model confirmed as superior for nested meeting artifacts.',
+      aiSummary: null,
+      history: [{ action: 'Meeting completed', by: 'Pranita', at: past(3) }]
+    },
+    {
+      id: 3,
+      _id: '3',
+      title: 'Frontend Architecture Planning',
+      date: past(1),
+      status: 'Completed',
+      type: 'Sprint Review',
+      recurring: 'None',
+      pinned: false,
+      agenda: 'Topic: React component structure\nTopic: State management approach\nTopic: API integration layer',
+      attendees: ['Pranita', 'Riya'],
+      attendeeNames: ['Pranita', 'Riya'],
+      attendance: [
+        { name: 'Pranita', status: 'Present' },
+        { name: 'Riya', status: 'Present' }
+      ],
+      decisions: [
+        'Use Zustand for state management — lightweight and no boilerplate.',
+        'Axios with interceptors for all API calls.',
+        'Feature-based folder structure in src/.'
+      ],
+      tasks: [
+        { id: 108, _id: '108', desc: 'Set up Zustand store with meeting and task slices', description: 'Set up Zustand store with meeting and task slices', assignee: 'Pranita', assigneeName: 'Pranita', deadline: future(3), status: 'In Progress', priority: 'High', progress: 50, notes: 'Stores drafted' },
+        { id: 109, _id: '109', desc: 'Build reusable MeetingCard and TaskTable components', description: 'Build reusable MeetingCard and TaskTable components', assignee: 'Riya', assigneeName: 'Riya', deadline: future(6), status: 'Open', priority: 'Medium', progress: 0, notes: '' },
+        { id: 110, _id: '110', desc: 'Configure Axios instance with base URL and auth headers', description: 'Configure Axios instance with base URL and auth headers', assignee: 'Pranita', assigneeName: 'Pranita', deadline: future(7), status: 'Open', priority: 'Low', progress: 0, notes: '' },
+      ],
+      insights: [
+        { topic: 'State management approach', author: 'Pranita', authorName: 'Pranita', text: 'Zustand beats Redux for this scale. We get a simple store with no provider setup.', timestamp: past(1) }
+      ],
+      comments: [],
+      notes: 'Zustand approved for client architecture.',
+      aiSummary: null,
+      history: [{ action: 'Meeting held', by: 'Pranita', at: past(1) }]
+    },
+    {
+      id: 4,
+      _id: '4',
+      title: 'Sprint 2 Planning & UI Review',
+      date: future(3),
+      status: 'Upcoming',
+      type: 'Sprint Review',
+      recurring: 'Weekly',
+      pinned: true,
+      agenda: 'Topic: UI polish & Kanban board\nTopic: Notification workflows\nTopic: Performance profiling',
+      attendees: ['Pranita', 'Gargi', 'Riya', 'Arjun', 'Siddharth'],
+      attendeeNames: ['Pranita', 'Gargi', 'Riya', 'Arjun', 'Siddharth'],
+      attendance: [
+        { name: 'Pranita', status: 'Present' },
+        { name: 'Gargi', status: 'Present' },
+        { name: 'Riya', status: 'Present' },
+        { name: 'Arjun', status: 'Present' },
+        { name: 'Siddharth', status: 'Present' }
+      ],
+      decisions: [
+        'Release candidate RC1 ready before demo day.',
+        'Kanban task board becomes default view for sprint execution.'
+      ],
+      tasks: [
+        { id: 111, _id: '111', desc: 'Review responsive layout on mobile viewports', description: 'Review responsive layout on mobile viewports', assignee: 'Gargi', assigneeName: 'Gargi', deadline: future(4), status: 'Open', priority: 'High', progress: 0, notes: '' },
+        { id: 112, _id: '112', desc: 'Smoke test notification triggers across browsers', description: 'Smoke test notification triggers across browsers', assignee: 'Riya', assigneeName: 'Riya', deadline: future(5), status: 'Open', priority: 'Critical', progress: 0, notes: '' }
+      ],
+      insights: [],
+      comments: [],
+      notes: 'Upcoming sprint sync — bring metrics.',
+      aiSummary: null,
+      history: [{ action: 'Meeting scheduled', by: 'Pranita', at: today() }]
+    }
+  ];
+
+  notifications = [
+    { title: 'Upcoming Meeting Scheduled', message: '"Sprint 2 Planning & UI Review" scheduled for 3 days from now', time: '1 hour ago', read: false, meetingId: 4 },
+    { title: 'Task Overdue Alert', message: '"Write test cases for login and task flows" is overdue!', time: '2 days ago', read: false, view: 'my-tasks' },
+    { title: 'Discussion Mention', message: 'Gargi mentioned you in "Meetrix Hackathon Kickoff"', time: '4 days ago', read: false, meetingId: 1 },
+    { title: 'New Decision Recorded', message: 'In "Database Design Review": Embedded documents approved', time: '3 days ago', read: true, meetingId: 2 }
+  ];
+  saveLocalState();
+}
+
+// ── SYNC FROM BACKEND API ──
+async function syncFromBackend() {
+  const health = await apiCall('/api/health');
+  const pill = document.getElementById('systemStatusPill');
+  const dot = document.getElementById('systemStatusDot');
+  const txt = document.getElementById('systemStatusText');
+
+  if (health && health.status === 'ok') {
+    isBackendConnected = true;
+    dot.className = 'status-dot';
+    txt.textContent = 'API Connected (MongoDB)';
+
+    // Ensure logged in
+    await loginUser(activeUser);
+
+    // Fetch live meetings from API
+    const apiMeetings = await apiCall('/api/meetings');
+    if (Array.isArray(apiMeetings) && apiMeetings.length) {
+      meetings = apiMeetings.map(m => ({
+        ...m,
+        id: m._id,
+        attendees: m.attendeeNames && m.attendeeNames.length ? m.attendeeNames : (m.attendees || []).map(a => a.name || a),
+        tasks: (m.tasks || []).map(t => ({
+          ...t,
+          id: t._id,
+          desc: t.description || t.desc,
+          assignee: t.assigneeName || (t.assignee && t.assignee.name ? t.assignee.name : t.assignee)
+        }))
+      }));
+      saveLocalState();
+    }
+
+    // Fetch notifications
+    await syncNotificationsFromAPI();
+  } else {
+    isBackendConnected = false;
+    dot.className = 'status-dot offline';
+    txt.textContent = 'Standalone Mode (Offline)';
+  }
+
+  renderAll();
+}
+
+async function syncNotificationsFromAPI() {
+  const notifData = await apiCall('/api/notifications');
+  if (notifData && Array.isArray(notifData.notifications)) {
+    notifications = notifData.notifications;
+    saveLocalState();
+    renderNotifs();
+  }
+}
+
+// RENDER ALL
+function renderAll() {
+  updateOverdueBadge();
+  renderNotifs();
+  if (currentView === 'overview') renderOverview();
+  else if (currentView === 'meetings') renderMeetingsHub();
+  else if (currentView === 'kanban') renderKanban();
+  else if (currentView === 'my-tasks') renderMyTasks();
+  else if (currentView === 'team') renderTeamProfiles();
+  else if (currentView === 'analytics') renderAnalytics();
+  else if (currentView === 'detail' && activeMeetingId) renderDetail(activeMeetingId);
+}
+
+function updateOverdueBadge() {
+  const over = allTasks().filter(t => t.assignee === activeUser && isOverdue(t)).length;
+  const b = document.getElementById('overdueBadge');
+  if (over > 0) { b.textContent = over; b.style.display = 'inline'; }
+  else { b.style.display = 'none'; }
+}
+
+// ── RENDER OVERVIEW ──
+function renderOverview() {
+  const tasks = allTasks();
+  const completedTasks = tasks.filter(t => t.status === 'Completed').length;
+  const overdueTasks = tasks.filter(isOverdue).length;
+  const totalDecisions = meetings.reduce((a, m) => a + (m.decisions||[]).length, 0);
+  const upcomingMeetings = meetings.filter(m => m.status === 'Upcoming' || new Date(m.date) >= new Date()).length;
+  const completionRate = tasks.length ? Math.round((completedTasks / tasks.length) * 100) : 0;
+
+  document.getElementById('overviewStats').innerHTML = `
+    <div class="stat-card accent">
+      <div class="stat-num">${meetings.length}</div>
+      <div class="stat-label">Total Meetings</div>
+      <div class="stat-sub">${upcomingMeetings} scheduled / upcoming</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-num">${tasks.length}</div>
+      <div class="stat-label">Action Items</div>
+      <div class="stat-sub">${completedTasks} completed (${completionRate}%)</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-num">${overdueTasks}</div>
+      <div class="stat-label">Overdue Tasks</div>
+      <div class="stat-sub">Immediate attention needed</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num">${totalDecisions}</div>
+      <div class="stat-label">Decisions Logged</div>
+      <div class="stat-sub">${meetings.length ? (totalDecisions/meetings.length).toFixed(1) : 0} per meeting</div>
+    </div>
+  `;
+
+  renderTimelineChart();
+  renderPriorityChart();
+
+  const rec = [...meetings].sort((a,b) => b.date.localeCompare(a.date)).slice(0, 3);
+  document.getElementById('recentMeetingsGrid').innerHTML = rec.map(meetingCardHTML).join('');
+
+  const overTable = tasks.filter(isOverdue);
+  document.getElementById('overviewOverdueBody').innerHTML = overTable.length ? overTable.map(t => `
+    <tr class="task-row overdue">
+      <td><div style="font-weight:600">${t.desc}</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${t.meetingTitle}</div></td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="avatar" style="${avatarStyle(t.assignee)}">${initials(t.assignee)}</div><span>${t.assignee}</span></div></td>
+      <td><span style="color:var(--red);font-weight:600;font-family:var(--mono)">${fmtDate(t.deadline)}</span></td>
+      <td><span class="priority-badge priority-${t.priority||'Medium'}">${t.priority||'Medium'}</span></td>
+      <td>
+        <select class="form-select" style="padding:3px 6px;font-size:11px" onchange="quickUpdateTaskStatus('${t.meetingId}', '${t.id || t._id}', this.value)">
+          <option ${t.status==='Open'?'selected':''}>Open</option>
+          <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
+          <option ${t.status==='Completed'?'selected':''}>Completed</option>
+        </select>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3);font-family:var(--mono)">No overdue tasks. All team commitments on schedule!</td></tr>`;
+}
+
+// SVG Charts (Dynamic from actual meetings)
+function renderTimelineChart() {
+  const months = [];
+  const counts = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    const mLabel = d.toLocaleString('en-US', { month: 'short' });
+    const y = d.getFullYear();
+    const c = meetings.filter(m => {
+      const md = new Date(m.date);
+      return md.getMonth() === d.getMonth() && md.getFullYear() === y;
+    }).length;
+    months.push(mLabel);
+    counts.push(c);
+  }
+  const max = Math.max(...counts, 4);
+  const bars = counts.map((c, i) => {
+    const x = 30 + i * 50;
+    const h = (c / max) * 110;
+    const y = 140 - h;
+    return `
+      <rect x="${x}" y="${y}" width="28" height="${h}" rx="4" fill="var(--accent)" opacity="0.85"></rect>
+      <text x="${x+14}" y="160" font-size="10" font-family="var(--mono)" fill="var(--text3)" text-anchor="middle">${months[i]}</text>
+      <text x="${x+14}" y="${y-6}" font-size="10" font-family="var(--mono)" font-weight="600" fill="var(--text)" text-anchor="middle">${c}</text>
+    `;
+  }).join('');
+
+  document.getElementById('timelineChart').innerHTML = `
+    <svg viewBox="0 0 340 180" width="100%" height="100%">
+      <line x1="20" y1="140" x2="330" y2="140" stroke="var(--border2)" stroke-width="1"></line>
+      ${bars}
+    </svg>
+  `;
+}
+
+function renderPriorityChart() {
+  const tasks = allTasks();
+  const crit = tasks.filter(t => t.priority === 'Critical').length;
+  const high = tasks.filter(t => t.priority === 'High').length;
+  const med = tasks.filter(t => t.priority === 'Medium' || !t.priority).length;
+  const low = tasks.filter(t => t.priority === 'Low').length;
+
+  document.getElementById('priorityChart').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;padding:10px 0">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--red);font-weight:600">Critical Priority</span><span style="font-family:var(--mono)">${crit} tasks</span></div>
+        <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${tasks.length?(crit/tasks.length)*100:0}%;background:var(--red)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#ea580c;font-weight:600">High Priority</span><span style="font-family:var(--mono)">${high} tasks</span></div>
+        <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${tasks.length?(high/tasks.length)*100:0}%;background:#ea580c"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--orange);font-weight:600">Medium Priority</span><span style="font-family:var(--mono)">${med} tasks</span></div>
+        <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${tasks.length?(med/tasks.length)*100:0}%;background:var(--orange)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--blue);font-weight:600">Low Priority</span><span style="font-family:var(--mono)">${low} tasks</span></div>
+        <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${tasks.length?(low/tasks.length)*100:0}%;background:var(--blue)"></div></div>
+      </div>
+    </div>
+  `;
+}
+
+// ── MEETING CARD HTML ──
+function meetingCardHTML(m) {
+  const mid = m._id || m.id;
+  const over = (m.tasks||[]).filter(isOverdue).length;
+  const isPinned = m.pinned;
+  const statusBadge = `<span class="badge badge-${(m.status||'Completed').toLowerCase()}">${m.status||'Completed'}</span>`;
+  const typeBadge = `<span class="badge badge-type">${m.type||'General Discussion'}</span>`;
+  const recurBadge = m.recurring && m.recurring !== 'None' ? `<span class="badge badge-recurring">⟳ ${m.recurring}</span>` : '';
+  const attendeeList = m.attendeeNames && m.attendeeNames.length ? m.attendeeNames : (m.attendees || []).map(a => a.name || a);
+
+  return `
+    <div class="meeting-card ${isPinned?'pinned':''}" onclick="openDetail('${mid}')">
+      <div class="meeting-card-top">
+        <div class="meeting-title">${m.title}</div>
+        <span class="pin-star ${isPinned?'active':''}" onclick="togglePinMeeting(event, '${mid}')" title="${isPinned?'Unpin':'Pin'}">★</span>
+      </div>
+      <div class="meeting-meta-row">
+        <div class="meeting-date">📅 ${fmtDate(m.date)}</div>
+        ${statusBadge}
+        ${typeBadge}
+        ${recurBadge}
+      </div>
+      ${m.cancelReason ? `<div style="font-size:11.5px;color:var(--red);margin-bottom:8px">Cancelled: ${m.cancelReason}</div>` : ''}
+      <div class="attendees-avatars">
+        ${attendeeList.map(a => `<span class="attendee-chip">${a}</span>`).join('')}
+      </div>
+      <div class="meeting-metrics">
+        <span class="metric-item">✓ ${(m.tasks||[]).length} tasks</span>
+        <span class="metric-item">⚖ ${(m.decisions||[]).length} decisions</span>
+        <span class="metric-item">💬 ${(m.insights||[]).length} insights</span>
+        ${over>0?`<span style="color:var(--red);font-weight:700;margin-left:auto">${over} overdue</span>`:''}
+      </div>
+    </div>
+  `;
+}
+
+async function togglePinMeeting(e, mid) {
+  e.stopPropagation();
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(m) {
+    m.pinned = !m.pinned;
+    if (isBackendConnected) {
+      await apiCall(`/api/meetings/${mid}/pin`, { method: 'PATCH' });
+    }
+    saveLocalState();
+    showToast(m.pinned ? 'Meeting pinned to top' : 'Meeting unpinned', 'info');
+    renderAll();
+  }
+}
+
+// ── RENDER MEETINGS HUB ──
+function renderMeetingsHub() {
+  const statusFilter = document.getElementById('filterMeetingStatus').value;
+  const typeFilter = document.getElementById('filterMeetingType').value;
+
+  let filtered = [...meetings];
+  if(statusFilter !== 'All') {
+    filtered = filtered.filter(m => m.status === statusFilter);
+  }
+  if(typeFilter !== 'All') {
+    filtered = filtered.filter(m => (m.type || 'General Discussion') === typeFilter);
+  }
+
+  filtered.sort((a,b) => (b.pinned?1:0) - (a.pinned?1:0) || b.date.localeCompare(a.date));
+
+  const grid = document.getElementById('allMeetingsGrid');
+  grid.innerHTML = filtered.length ? filtered.map(meetingCardHTML).join('') : `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);font-family:var(--mono)">No matching meetings found.</div>`;
+}
+
+// ── RENDER KANBAN BOARD ──
+function renderKanban() {
+  const pri = document.getElementById('kanbanPriorityFilter').value;
+  const ass = document.getElementById('kanbanAssigneeFilter').value;
+  let tasks = allTasks();
+
+  if(pri !== 'All') tasks = tasks.filter(t => t.priority === pri);
+  if(ass !== 'All') tasks = tasks.filter(t => t.assignee === ass);
+
+  const openList = tasks.filter(t => t.status === 'Open');
+  const progList = tasks.filter(t => t.status === 'In Progress');
+  const compList = tasks.filter(t => t.status === 'Completed');
+
+  document.getElementById('countOpen').textContent = openList.length;
+  document.getElementById('countProgress').textContent = progList.length;
+  document.getElementById('countCompleted').textContent = compList.length;
+
+  document.getElementById('colOpen').innerHTML = openList.map(t => kanbanCardHTML(t)).join('') || `<div style="text-align:center;padding:24px;color:var(--text4);font-size:12px">No open tasks</div>`;
+  document.getElementById('colProgress').innerHTML = progList.map(t => kanbanCardHTML(t)).join('') || `<div style="text-align:center;padding:24px;color:var(--text4);font-size:12px">No tasks in progress</div>`;
+  document.getElementById('colCompleted').innerHTML = compList.map(t => kanbanCardHTML(t)).join('') || `<div style="text-align:center;padding:24px;color:var(--text4);font-size:12px">No completed tasks</div>`;
+}
+
+function kanbanCardHTML(t) {
+  const tid = t._id || t.id;
+  const mid = t.meetingId;
+  const over = isOverdue(t);
+  return `
+    <div class="kanban-card" onclick="openEditTaskModal('${mid}', '${tid}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span class="priority-badge priority-${t.priority||'Medium'}">${t.priority||'Medium'}</span>
+        <span style="font-family:var(--mono);font-size:10px;color:${over?'var(--red)':'var(--text3)'}">${over?'⚠ Overdue':fmtDate(t.deadline)}</span>
+      </div>
+      <div class="kanban-card-title">${t.desc}</div>
+      <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${t.progress||(t.status==='Completed'?100:0)}%"></div></div>
+      <div class="kanban-card-meta">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="avatar" style="${avatarStyle(t.assignee)}">${initials(t.assignee)}</div>
+          <span>${t.assignee}</span>
+        </div>
+        <span style="font-family:var(--mono);color:var(--text4);font-size:10px">${t.meetingTitle||'Meeting'}</span>
+      </div>
+      <div class="kanban-move-btns" onclick="event.stopPropagation()">
+        ${t.status !== 'Open' ? `<button class="btn btn-ghost btn-sm" style="padding:2px 7px;font-size:10px" onclick="quickUpdateTaskStatus('${mid}', '${tid}', 'Open')">← Open</button>` : ''}
+        ${t.status !== 'In Progress' ? `<button class="btn btn-ghost btn-sm" style="padding:2px 7px;font-size:10px" onclick="quickUpdateTaskStatus('${mid}', '${tid}', 'In Progress')">Progress</button>` : ''}
+        ${t.status !== 'Completed' ? `<button class="btn btn-ghost btn-sm" style="padding:2px 7px;font-size:10px" onclick="quickUpdateTaskStatus('${mid}', '${tid}', 'Completed')">Done ✓</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+async function quickUpdateTaskStatus(mid, tid, st) {
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(!m) return;
+  const t = (m.tasks || []).find(x => (x._id || x.id) == tid);
+  if(!t) return;
+  t.status = st;
+  if(st === 'Completed') t.progress = 100;
+
+  if (isBackendConnected) {
+    await apiCall(`/api/tasks/${mid}/${tid}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: st, progress: t.progress })
+    });
+  }
+
+  saveLocalState();
+  showToast(`Task status updated to ${st}`);
+  renderAll();
+}
+
+// ── RENDER MY TASKS ──
+function renderMyTasks() {
+  const my = allTasks().filter(t => t.assignee === activeUser);
+  const comp = my.filter(t => t.status === 'Completed').length;
+  const over = my.filter(isOverdue).length;
+  const prog = my.filter(t => t.status === 'In Progress').length;
+
+  document.getElementById('myTaskStats').innerHTML = `
+    <div class="stat-card blue"><div class="stat-num">${my.length}</div><div class="stat-label">Assigned to Me</div></div>
+    <div class="stat-card red"><div class="stat-num">${over}</div><div class="stat-label">Overdue</div></div>
+    <div class="stat-card orange"><div class="stat-num">${prog}</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card green"><div class="stat-num">${comp}</div><div class="stat-label">Completed</div></div>
+  `;
+
+  document.getElementById('myTasksTableBody').innerHTML = my.length ? my.map(t => `
+    <tr class="task-row ${isOverdue(t)?'overdue':''}">
+      <td><div style="font-weight:600">${t.desc}</div>${t.notes?`<div style="font-size:11px;color:var(--text3)">${t.notes}</div>`:''}</td>
+      <td><span style="font-family:var(--mono);font-size:11.5px">${t.meetingTitle}</span></td>
+      <td><span style="font-family:var(--mono);color:${isOverdue(t)?'var(--red)':'var(--text)'};font-weight:${isOverdue(t)?'700':'400'}">${fmtDate(t.deadline)}</span></td>
+      <td><span class="priority-badge priority-${t.priority||'Medium'}">${t.priority||'Medium'}</span></td>
+      <td style="width:110px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${t.progress||0}%"></div></div>
+          <span style="font-family:var(--mono);font-size:10px">${t.progress||0}%</span>
+        </div>
+      </td>
+      <td>
+        <select class="form-select" style="padding:4px 7px;font-size:11.5px" onchange="quickUpdateTaskStatus('${t.meetingId}', '${t.id || t._id}', this.value)">
+          <option ${t.status==='Open'?'selected':''}>Open</option>
+          <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
+          <option ${t.status==='Completed'?'selected':''}>Completed</option>
+        </select>
+      </td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openEditTaskModal('${t.meetingId}', '${t.id || t._id}')">Edit</button>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3);font-family:var(--mono)">No action items currently assigned to ${activeUser}!</td></tr>`;
+}
+
+// ── RENDER MEETING DETAIL ──
+function openDetail(mid) {
+  activeMeetingId = mid;
+  showView('detail');
+}
+
+function renderDetail(mid) {
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(!m) return;
+
+  const currentMid = m._id || m.id;
+  document.getElementById('detailTaskCount').textContent = (m.tasks||[]).length;
+
+  document.getElementById('detailTopActions').innerHTML = `
+    <button class="btn btn-ghost btn-sm" onclick="duplicateMeeting('${currentMid}')">Duplicate</button>
+    <button class="btn btn-ghost btn-sm" onclick="openEditMeetingModal('${currentMid}')">Reschedule / Edit</button>
+    ${m.status!=='Cancelled'?`<button class="btn btn-danger btn-sm" onclick="openCancelMeetingModal('${currentMid}')">Cancel</button>`:''}
+    <button class="btn btn-primary btn-sm" onclick="window.print()">Print / PDF</button>
+  `;
+
+  const attendeesStr = m.attendeeNames && m.attendeeNames.length ? m.attendeeNames.join(', ') : (m.attendees || []).map(a => a.name || a).join(', ');
+
+  document.getElementById('detailHeaderCard').innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h2 style="font-size:20px;font-weight:700;letter-spacing:-0.3px">${m.title}</h2>
+        <div style="display:flex;gap:6px">
+          <span class="badge badge-${(m.status||'Completed').toLowerCase()}">${m.status||'Completed'}</span>
+          <span class="badge badge-type">${m.type||'General Discussion'}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--text3);margin-bottom:10px">
+        <span>📅 ${fmtDate(m.date)}</span>
+        <span>👥 ${attendeesStr}</span>
+        <span>⚖ ${(m.decisions||[]).length} decisions</span>
+        <span>✓ ${(m.tasks||[]).length} action items</span>
+      </div>
+      ${m.cancelReason?`<div style="font-size:12px;color:var(--red);background:var(--red-bg);padding:8px 12px;border-radius:6px;border:1px solid #fecaca"><strong>Cancellation Reason:</strong> ${m.cancelReason}</div>`:''}
+    </div>
+  `;
+
+  // Tab 1: Overview & Agenda
+  document.getElementById('detailAgendaText').textContent = m.agenda || 'No formal agenda specified.';
+  document.getElementById('detailDecisionsList').innerHTML = (m.decisions||[]).length ? (m.decisions||[]).map((d, i) => `
+    <div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+      <span style="color:var(--accent);font-weight:700">${i+1}.</span>
+      <div style="flex:1">${d}</div>
+    </div>
+  `).join('') : `<div style="color:var(--text4);font-family:var(--mono);font-size:12px">No decisions recorded yet.</div>`;
+
+  document.getElementById('detailHistoryTimeline').innerHTML = (m.history||[]).length ? (m.history||[]).map(h => `
+    <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px">
+      <span style="font-family:var(--mono);color:var(--text4);font-size:10.5px">${fmtDate(h.at)}</span>
+      <span style="font-weight:600">${h.action}</span>
+      <span style="color:var(--text3)">by ${h.by||'Team'}</span>
+    </div>
+  `).join('') : `<div style="color:var(--text4);font-family:var(--mono);font-size:12px">Session activity log started.</div>`;
+
+  // Tab 2: Tasks Table
+  document.getElementById('detailTasksTableBody').innerHTML = (m.tasks||[]).length ? (m.tasks||[]).map(t => {
+    const tid = t._id || t.id;
+    const assName = t.assigneeName || (t.assignee && t.assignee.name ? t.assignee.name : t.assignee);
+    return `
+      <tr class="task-row ${isOverdue(t)?'overdue':''}">
+        <td><div style="font-weight:600">${t.desc || t.description}</div>${t.notes?`<div style="font-size:11px;color:var(--text3)">${t.notes}</div>`:''}</td>
+        <td><div style="display:flex;align-items:center;gap:6px"><div class="avatar" style="${avatarStyle(assName)}">${initials(assName)}</div><span>${assName}</span></div></td>
+        <td><span style="font-family:var(--mono);color:${isOverdue(t)?'var(--red)':'var(--text)'}">${fmtDate(t.deadline)}</span></td>
+        <td><span class="priority-badge priority-${t.priority||'Medium'}">${t.priority||'Medium'}</span></td>
+        <td style="width:100px">
+          <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${t.progress||0}%"></div></div>
+        </td>
+        <td>
+          <select class="form-select" style="padding:3px 6px;font-size:11.5px" onchange="quickUpdateTaskStatus('${currentMid}', '${tid}', this.value)">
+            <option ${t.status==='Open'?'selected':''}>Open</option>
+            <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
+            <option ${t.status==='Completed'?'selected':''}>Completed</option>
+          </select>
+        </td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="openEditTaskModal('${currentMid}', '${tid}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTask('${currentMid}', '${tid}')">✕</button>
+        </td>
+      </tr>
+    `;
+  }).join('') : `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text3);font-family:var(--mono)">No action items logged for this session.</td></tr>`;
+
+  // Tab 3: Insights
+  const byTopic = {};
+  (m.insights||[]).forEach(i => {
+    if(!byTopic[i.topic]) byTopic[i.topic] = [];
+    byTopic[i.topic].push(i);
+  });
+  const topics = Object.keys(byTopic);
+  document.getElementById('detailInsightsList').innerHTML = topics.length ? topics.map(top => `
+    <div class="panel" style="margin-bottom:12px">
+      <div class="panel-header"><div class="panel-title" style="color:var(--purple)">◈ Topic: ${top}</div></div>
+      <div class="panel-body">
+        ${byTopic[top].map(ins => {
+          const authName = ins.authorName || (ins.author && ins.author.name ? ins.author.name : ins.author);
+          return `
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:8px">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                <div class="avatar" style="${avatarStyle(authName)};width:20px;height:20px;font-size:9px">${initials(authName)}</div>
+                <strong style="font-size:12px">${authName}</strong>
+                <span style="font-family:var(--mono);font-size:10px;color:var(--text4);margin-left:auto">${fmtDate(ins.timestamp || ins.createdAt)}</span>
+              </div>
+              <div style="font-size:13px;color:var(--text2);line-height:1.6">${ins.text}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('') : `<div style="text-align:center;padding:32px;color:var(--text4);font-family:var(--mono)">No topic insights collected yet. Click "+ Add Topic Insights" to begin.</div>`;
+
+  // Tab 5: Comments
+  document.getElementById('commentsList').innerHTML = (m.comments||[]).length ? (m.comments||[]).map(c => {
+    const authName = c.authorName || (c.author && c.author.name ? c.author.name : c.author);
+    return `
+      <div class="comment-box">
+        <div class="comment-top">
+          <div class="avatar" style="${avatarStyle(authName)}">${initials(authName)}</div>
+          <div class="comment-author">${authName}</div>
+          <div class="comment-time">${c.time || fmtDate(c.createdAt) || 'Recent'}</div>
+        </div>
+        <div class="comment-body">${c.text}</div>
+      </div>
+    `;
+  }).join('') : `<div style="color:var(--text4);font-family:var(--mono);font-size:12px;padding:12px 0">No comments yet. Start the conversation with an @mention.</div>`;
+
+  // Tab 6: Attendance
+  const attendeeArray = m.attendeeNames && m.attendeeNames.length ? m.attendeeNames : (m.attendees || []).map(a => a.name || a);
+  document.getElementById('attendanceRollCall').innerHTML = attendeeArray.map(att => {
+    const rec = (m.attendance||[]).find(a => a.name === att);
+    const curr = rec ? rec.status : 'Present';
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="${avatarStyle(att)}">${initials(att)}</div>
+          <div>
+            <div style="font-weight:600;font-size:13px">${att}</div>
+            <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${USER_ROLES[att]||'Team Member'}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-sm ${curr==='Present'?'btn-primary':'btn-ghost'}" onclick="setAttendance('${att}', 'Present')">Present</button>
+          <button class="btn btn-sm ${curr==='Late'?'btn-primary':'btn-ghost'}" onclick="setAttendance('${att}', 'Late')">Late</button>
+          <button class="btn btn-sm ${curr==='Absent'?'btn-danger':'btn-ghost'}" onclick="setAttendance('${att}', 'Absent')">Absent</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Tab 7: Notes
+  document.getElementById('detailNotesText').value = m.notes || '';
+}
+
+function switchDetailTab(tabId, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// ── AI SUITE FUNCTIONS ──
+async function triggerSmartSummary() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  const target = document.getElementById('aiSummaryResult');
+  target.innerHTML = `<div style="color:var(--purple);font-family:var(--mono);padding:14px">Synthesizing discussion points, decisions, and action items via AI...</div>`;
+
+  let result = null;
+  if (isBackendConnected && m._id) {
+    result = await apiCall(`/api/ai/${m._id}/summary`, { method: 'POST' });
+  }
+
+  if (result) {
+    const isRealClaude = result._meta && result._meta.isRealClaude;
+    const sourceLabel = isRealClaude ? 'Anthropic Claude API' : 'Meetrix Local NLP Engine';
+    target.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span class="ai-source-badge">Engine: ${sourceLabel}</span>
+        <span style="font-size:11px;color:var(--text4)">${result._meta.disclaimer || ''}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div class="ai-section-label">Meeting Objective</div>
+          <div>${result.objective}</div>
+        </div>
+        <div>
+          <div class="ai-section-label">Main Discussion Points</div>
+          <ul style="padding-left:18px">${(result.mainPoints||[]).map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div class="ai-section-label">Final Decisions Made</div>
+          <ul style="padding-left:18px">${(result.decisions||[]).map(d => `<li>${d}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div class="ai-section-label">Recommended Next Steps</div>
+          <ul style="padding-left:18px">${(result.recommendedNextSteps||[]).map(s => `<li>${s}</li>`).join('')}</ul>
+        </div>
+      </div>
+    `;
+    m.aiSummary = 'AI summary generated and cached.';
+    saveLocalState();
+    showToast(`AI Smart Summary generated via ${sourceLabel}!`);
+  } else {
+    // Fallback client synthesis
+    const topics = [...new Set((m.insights||[]).map(i => i.topic))];
+    target.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span class="ai-source-badge">Engine: Meetrix Local Synthesis (Standalone)</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div class="ai-section-label">Meeting Objective</div>
+          <div>${m.agenda ? `Drive alignment on ${m.title} focusing on ${topics.slice(0, 2).join(' and ') || 'sprint deliverables'}.` : `Synchronize team status on ${m.title}.`}</div>
+        </div>
+        <div>
+          <div class="ai-section-label">Main Discussion Points</div>
+          <ul style="padding-left:18px">${topics.length ? topics.map(t => `<li>Explored trade-offs and ownership around <strong>${t}</strong>.</li>`).join('') : `<li>Reviewed task velocity and roadmap milestones.</li>`}</ul>
+        </div>
+        <div>
+          <div class="ai-section-label">Final Decisions Made</div>
+          <ul style="padding-left:18px">${(m.decisions||[]).length ? (m.decisions||[]).map(d => `<li>${d}</li>`).join('') : `<li>No formal decisions recorded.</li>`}</ul>
+        </div>
+      </div>
+    `;
+    showToast('Summary synthesized!');
+  }
+}
+
+async function triggerDiscussionAnalysis() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  const target = document.getElementById('aiAnalysisResult');
+
+  let result = null;
+  if (isBackendConnected && m._id) {
+    result = await apiCall(`/api/ai/${m._id}/analysis`, { method: 'POST' });
+  }
+
+  if (result) {
+    const isRealClaude = result._meta && result._meta.isRealClaude;
+    target.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span class="ai-source-badge">Engine: ${isRealClaude ? 'Anthropic Claude' : 'Meetrix Local NLP'}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="ai-section-label">Consensus View</div>
+        <div>${result.standoutConsensus}</div>
+        <div class="ai-section-label">Strongest Recommendation</div>
+        <div>${result.strongestTeamRecommendation}</div>
+      </div>
+    `;
+  } else {
+    target.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="ai-section-label">Consensus View</div>
+        <div>High consensus on iterative feature delivery, lightweight tools, and clear ownership.</div>
+        <div class="ai-section-label">Strongest Recommendation</div>
+        <div>Build working end-to-end prototype early so judges and stakeholders can evaluate live interactions.</div>
+      </div>
+    `;
+  }
+  showToast('Discussion analysis updated!');
+}
+
+async function triggerDecisionIntel() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  const target = document.getElementById('aiDecisionIntelResult');
+
+  let result = null;
+  if (isBackendConnected && m._id) {
+    result = await apiCall(`/api/ai/${m._id}/decision-intel`, { method: 'POST' });
+  }
+
+  if (result && result.decisionIntelligence) {
+    target.innerHTML = result.decisionIntelligence.length ? result.decisionIntelligence.map((d, i) => `
+      <div style="margin-bottom:10px">
+        <strong>Decision ${i+1}:</strong> ${d.decision}
+        <div style="font-size:12px;color:var(--text3);margin-top:2px"><em>Rationale:</em> ${d.rationale}</div>
+      </div>
+    `).join('') : 'No decisions recorded to evaluate.';
+  } else {
+    target.innerHTML = (m.decisions||[]).length ? (m.decisions||[]).map((d, i) => `
+      <div style="margin-bottom:10px">
+        <strong>Decision ${i+1}:</strong> ${d}
+        <div style="font-size:12px;color:var(--text3);margin-top:2px"><em>Rationale:</em> Directly supported by attendee feedback to maximize developer velocity and minimize infrastructure complexity.</div>
+      </div>
+    `).join('') : 'No decisions recorded to evaluate.';
+  }
+  showToast('Decision intelligence analyzed!');
+}
+
+async function askMeetingQuestion() {
+  const input = document.getElementById('meetingQAInput');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+
+  const box = document.getElementById('meetingQABox');
+  box.innerHTML += `<div class="qa-bubble qa-user">${q}</div>`;
+
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  let answer = '';
+
+  if (isBackendConnected && m._id) {
+    const res = await apiCall(`/api/ai/${m._id}/ask`, {
+      method: 'POST',
+      body: JSON.stringify({ question: q })
+    });
+    if (res && res.answer) {
+      answer = res.answer.replace(/\n/g, '<br>');
+    }
+  }
+
+  if (!answer) {
+    const qLower = q.toLowerCase();
+    if(qLower.includes('decision')) {
+      answer = (m.decisions||[]).length ? `The decisions logged in "${m.title}" are:<br>` + m.decisions.map((d,i)=>`• <strong>${d}</strong>`).join('<br>') : 'No formal decisions logged yet.';
+    } else if(qLower.includes('task') || qLower.includes('action')) {
+      answer = (m.tasks||[]).length ? `Tasks from "${m.title}":<br>` + m.tasks.map(t=>`• <strong>${t.desc || t.description}</strong> (${t.assigneeName || t.assignee} — ${t.status})`).join('<br>') : 'No action items logged.';
+    } else {
+      answer = `Based on the records for <strong>"${m.title}"</strong> (Date: ${fmtDate(m.date)}, Status: ${m.status}): Decisions: ${(m.decisions||[]).length}, Tasks: ${(m.tasks||[]).length}.`;
+    }
+  }
+
+  box.innerHTML += `<div class="qa-bubble qa-assistant">${answer}</div>`;
+  box.scrollTop = box.scrollHeight;
+}
+
+// ── COLLABORATION FUNCTIONS ──
+async function postComment() {
+  const input = document.getElementById('newCommentInput');
+  const val = input.value.trim();
+  if(!val) return;
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  if(!m.comments) m.comments = [];
+  const newC = { author: activeUser, authorName: activeUser, text: val, time: 'Just now', createdAt: new Date() };
+  m.comments.push(newC);
+  input.value = '';
+
+  if (isBackendConnected && m._id) {
+    await apiCall(`/api/meetings/${m._id}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ text: val })
+    });
+  }
+
+  if(val.includes('@')) {
+    notifications.unshift({
+      title: 'Mention in Discussion',
+      message: `${activeUser} mentioned someone in "${m.title}"`,
+      time: 'Just now',
+      read: false,
+      meetingId: m._id || m.id
+    });
+    renderNotifs();
+  }
+
+  saveLocalState();
+  showToast('Comment posted!');
+  renderDetail(activeMeetingId);
+}
+
+async function setAttendance(person, status) {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  if(!m.attendance) m.attendance = [];
+  const rec = m.attendance.find(a => a.name === person);
+  if(rec) rec.status = status;
+  else m.attendance.push({ name: person, status });
+
+  if (isBackendConnected && m._id) {
+    await apiCall(`/api/meetings/${m._id}/attendance`, {
+      method: 'PUT',
+      body: JSON.stringify({ attendance: m.attendance })
+    });
+  }
+
+  saveLocalState();
+  showToast(`Attendance: ${person} marked as ${status}`);
+  renderDetail(activeMeetingId);
+}
+
+async function saveMeetingNotes() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  const notes = document.getElementById('detailNotesText').value;
+  m.notes = notes;
+
+  if (isBackendConnected && m._id) {
+    await apiCall(`/api/meetings/${m._id}/notes`, {
+      method: 'PATCH',
+      body: JSON.stringify({ notes })
+    });
+  }
+
+  saveLocalState();
+  showToast('Meeting notes saved successfully!');
+}
+
+async function duplicateMeeting(mid) {
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(!m) return;
+
+  if (isBackendConnected && m._id) {
+    const res = await apiCall(`/api/meetings/${m._id}/duplicate`, { method: 'POST' });
+    if (res && res._id) {
+      const formatted = {
+        ...res,
+        id: res._id,
+        attendees: res.attendeeNames && res.attendeeNames.length ? res.attendeeNames : (res.attendees||[]).map(a=>a.name||a),
+        tasks: []
+      };
+      meetings.unshift(formatted);
+      saveLocalState();
+      showToast('Meeting duplicated successfully!');
+      openDetail(res._id);
+      return;
+    }
+  }
+
+  const dup = {
+    ...JSON.parse(JSON.stringify(m)),
+    id: Date.now(),
+    _id: String(Date.now()),
+    title: `${m.title} (Copy)`,
+    date: today(),
+    status: 'Upcoming',
+    decisions: [],
+    tasks: [],
+    history: [{ action: 'Meeting duplicated', by: activeUser, at: today() }]
+  };
+  meetings.unshift(dup);
+  saveLocalState();
+  showToast('Meeting duplicated successfully!');
+  openDetail(dup.id);
+}
+
+async function deleteTask(mid, tid) {
+  if(!confirm('Are you sure you want to delete this action item?')) return;
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(!m) return;
+  m.tasks = m.tasks.filter(t => (t._id || t.id) != tid);
+
+  if (isBackendConnected && m._id) {
+    await apiCall(`/api/tasks/${m._id}/${tid}`, { method: 'DELETE' });
+  }
+
+  saveLocalState();
+  showToast('Action item deleted', 'info');
+  renderAll();
+}
+
+// ── TEAM PROFILES ──
+function renderTeamProfiles() {
+  const tasks = allTasks();
+  const members = ['Pranita', 'Gargi', 'Riya', 'Arjun', 'Siddharth'];
+
+  document.getElementById('teamCardsGrid').innerHTML = members.map(m => {
+    const assigned = tasks.filter(t => t.assignee === m);
+    const comp = assigned.filter(t => t.status === 'Completed').length;
+    const over = assigned.filter(isOverdue).length;
+    const attended = meetings.filter(meet => {
+      const atts = meet.attendeeNames && meet.attendeeNames.length ? meet.attendeeNames : (meet.attendees||[]).map(a => a.name || a);
+      return atts.includes(m);
+    }).length;
+    const rate = assigned.length ? Math.round((comp / assigned.length) * 100) : 100;
+
+    return `
+      <div class="team-card">
+        <div class="team-card-top">
+          <div class="avatar" style="${avatarStyle(m)};width:42px;height:42px;font-size:15px">${initials(m)}</div>
+          <div>
+            <div class="team-card-name">${m}</div>
+            <div class="team-card-role">${USER_ROLES[m]}</div>
+            <div class="team-card-dept">${m==='Gargi'?'Product & Design':'Engineering'}</div>
+          </div>
+        </div>
+        <div class="team-stats-row">
+          <div><div class="team-stat-val">${attended}</div><div class="team-stat-lbl">Meetings</div></div>
+          <div><div class="team-stat-val">${comp}/${assigned.length}</div><div class="team-stat-lbl">Completed</div></div>
+          <div><div class="team-stat-val" style="color:${over?'var(--red)':'var(--green)'}">${over}</div><div class="team-stat-lbl">Overdue</div></div>
+        </div>
+        <div style="font-size:11.5px;color:var(--text3);margin-bottom:4px">Delivery Completion Rate: <strong>${rate}%</strong></div>
+        <div class="prog-bar-wrap"><div class="prog-bar-inner" style="width:${rate}%;background:${rate>75?'var(--green)':'var(--orange)'}"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── ANALYTICS ──
+function renderAnalytics() {
+  const tasks = allTasks();
+  const completed = tasks.filter(t => t.status === 'Completed').length;
+  const decisions = meetings.reduce((a, m) => a + (m.decisions||[]).length, 0);
+  const overdue = tasks.filter(isOverdue).length;
+  const prodIndex = tasks.length ? Math.min(100, Math.round(((completed / tasks.length) * 60) + Math.min(decisions * 4, 25) + Math.max(0, 15 - overdue * 2))) : 100;
+
+  document.getElementById('analyticsStatsGrid').innerHTML = `
+    <div class="stat-card accent"><div class="stat-num">${meetings.length}</div><div class="stat-label">Total Sessions</div></div>
+    <div class="stat-card green"><div class="stat-num">${completed}</div><div class="stat-label">Tasks Delivered</div></div>
+    <div class="stat-card blue"><div class="stat-num">${decisions}</div><div class="stat-label">Decisions Reached</div></div>
+    <div class="stat-card purple"><div class="stat-num">${prodIndex}%</div><div class="stat-label">Productivity Index</div></div>
+  `;
+
+  const members = ['Pranita', 'Gargi', 'Riya', 'Arjun', 'Siddharth'];
+  document.getElementById('analyticsLeaderboardBody').innerHTML = members.map(m => {
+    const assigned = tasks.filter(t => t.assignee === m);
+    const comp = assigned.filter(t => t.status === 'Completed').length;
+    const pend = assigned.filter(t => t.status !== 'Completed').length;
+    const over = assigned.filter(isOverdue).length;
+    const rate = assigned.length ? Math.round((comp / assigned.length) * 100) : 100;
+    return `
+      <tr class="task-row">
+        <td><div style="display:flex;align-items:center;gap:6px"><div class="avatar" style="${avatarStyle(m)}">${initials(m)}</div><strong>${m}</strong></div></td>
+        <td><span style="font-family:var(--mono);font-size:11px">${USER_ROLES[m]}</span></td>
+        <td>${assigned.length}</td>
+        <td><span style="color:var(--green);font-weight:600">${comp}</span></td>
+        <td>${pend}</td>
+        <td><span style="color:${over?'var(--red)':'var(--text3)'};font-weight:${over?'700':'400'}">${over}</span></td>
+        <td><strong>${rate}%</strong></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ── MODAL ACTIONS & CRUD ──
+function openMeetingModal() {
+  document.getElementById('mDate').value = today();
+  document.getElementById('mTitle').value = '';
+  document.getElementById('mAttendees').value = 'Pranita, Gargi, Riya, Arjun, Siddharth';
+  applyMeetingTemplate('General Discussion');
+  openModal('meetingModal');
+}
+
+async function saveNewMeeting() {
+  const title = document.getElementById('mTitle').value.trim();
+  if(!title) { alert('Please enter a meeting title'); return; }
+  const attendees = document.getElementById('mAttendees').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const type = document.getElementById('mType').value;
+  const recurring = document.getElementById('mRecurring').value;
+  const date = document.getElementById('mDate').value || today();
+  const agenda = document.getElementById('mAgenda').value;
+
+  let newMeeting = null;
+
+  if (isBackendConnected) {
+    const res = await apiCall('/api/meetings', {
+      method: 'POST',
+      body: JSON.stringify({
+        title,
+        date,
+        type,
+        recurring,
+        agenda,
+        attendees
+      })
+    });
+    if (res && res._id) {
+      newMeeting = {
+        ...res,
+        id: res._id,
+        attendees: res.attendeeNames || attendees,
+        tasks: []
+      };
+    }
+  }
+
+  if (!newMeeting) {
+    newMeeting = {
+      id: Date.now(),
+      _id: String(Date.now()),
+      title,
+      date,
+      status: 'Upcoming',
+      type,
+      recurring,
+      pinned: false,
+      agenda,
+      attendees,
+      attendeeNames: attendees,
+      attendance: attendees.map(a => ({ name: a, status: 'Present' })),
+      decisions: [],
+      tasks: [],
+      insights: [],
+      comments: [],
+      history: [{ action: 'Meeting scheduled', by: activeUser, at: today() }]
+    };
+  }
+
+  meetings.unshift(newMeeting);
+  notifications.unshift({
+    title: 'New Meeting Scheduled',
+    message: `${activeUser} scheduled "${title}"`,
+    time: 'Just now',
+    read: false,
+    meetingId: newMeeting._id || newMeeting.id
+  });
+
+  saveLocalState();
+  closeModal('meetingModal');
+  showToast('Meeting successfully created!');
+  openDetail(newMeeting._id || newMeeting.id);
+}
+
+function openEditMeetingModal(mid) {
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(!m) return;
+  document.getElementById('editMTitle').value = m.title;
+  document.getElementById('editMDate').value = m.date.slice(0, 10);
+  document.getElementById('editMStatus').value = m.status || 'Upcoming';
+  document.getElementById('editMAgenda').value = m.agenda || '';
+  openModal('editMeetingModal');
+}
+
+async function saveEditMeeting() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  const newTitle = document.getElementById('editMTitle').value.trim() || m.title;
+  const newDate = document.getElementById('editMDate').value || m.date;
+  const newStatus = document.getElementById('editMStatus').value;
+  const newAgenda = document.getElementById('editMAgenda').value;
+
+  m.title = newTitle;
+  m.date = newDate;
+  m.status = newStatus;
+  m.agenda = newAgenda;
+  if (!m.history) m.history = [];
+  m.history.push({ action: 'Meeting details updated', by: activeUser, at: today() });
+
+  if (isBackendConnected && m._id) {
+    await apiCall(`/api/meetings/${m._id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        title: newTitle,
+        date: newDate,
+        status: newStatus,
+        agenda: newAgenda
+      })
+    });
+  }
+
+  saveLocalState();
+  closeModal('editMeetingModal');
+  showToast('Meeting updated successfully');
+  renderDetail(activeMeetingId);
+}
+
+function openCancelMeetingModal(mid) {
+  document.getElementById('cancelReasonInput').value = '';
+  openModal('cancelMeetingModal');
+}
+
+async function confirmCancelMeeting() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  const reason = document.getElementById('cancelReasonInput').value.trim() || 'No reason provided';
+  m.status = 'Cancelled';
+  m.cancelReason = reason;
+  if (!m.history) m.history = [];
+  m.history.push({ action: 'Meeting cancelled', by: activeUser, at: today() });
+
+  if (isBackendConnected && m._id) {
+    await apiCall(`/api/meetings/${m._id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        status: 'Cancelled',
+        cancelReason: reason
+      })
+    });
+  }
+
+  notifications.unshift({
+    title: 'Meeting Cancelled',
+    message: `"${m.title}" was cancelled: ${reason}`,
+    time: 'Just now',
+    read: false,
+    meetingId: m._id || m.id
+  });
+
+  saveLocalState();
+  closeModal('cancelMeetingModal');
+  showToast('Meeting has been cancelled', 'info');
+  renderDetail(activeMeetingId);
+}
+
+// Task Modal (Add & Edit)
+function openTaskModal() {
+  editingTaskId = null;
+  document.getElementById('taskModalTitle').textContent = 'Add Action Item';
+  document.getElementById('tDesc').value = '';
+  document.getElementById('tDeadline').value = future(3);
+  document.getElementById('tStatus').value = 'Open';
+  document.getElementById('tPriority').value = 'Medium';
+  document.getElementById('tProgress').value = 0;
+  document.getElementById('tProgressVal').textContent = '0';
+  document.getElementById('tNotes').value = '';
+  openModal('taskModal');
+}
+
+function openEditTaskModal(mid, tid) {
+  const m = meetings.find(x => (x._id || x.id) == mid);
+  if(!m) return;
+  const t = (m.tasks||[]).find(x => (x._id || x.id) == tid);
+  if(!t) return;
+  activeMeetingId = mid;
+  editingTaskId = tid;
+  document.getElementById('taskModalTitle').textContent = 'Edit Action Item';
+  document.getElementById('tDesc').value = t.desc || t.description || '';
+  document.getElementById('tAssignee').value = t.assigneeName || (t.assignee && t.assignee.name ? t.assignee.name : t.assignee) || 'Pranita';
+  document.getElementById('tDeadline').value = (t.deadline || today()).slice(0, 10);
+  document.getElementById('tStatus').value = t.status || 'Open';
+  document.getElementById('tPriority').value = t.priority || 'Medium';
+  document.getElementById('tProgress').value = t.progress || 0;
+  document.getElementById('tProgressVal').textContent = t.progress || 0;
+  document.getElementById('tNotes').value = t.notes || '';
+  openModal('taskModal');
+}
+
+async function saveTaskModal() {
+  const desc = document.getElementById('tDesc').value.trim();
+  if(!desc) { alert('Please enter a task description'); return; }
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+
+  const assignee = document.getElementById('tAssignee').value;
+  const priority = document.getElementById('tPriority').value;
+  const deadline = document.getElementById('tDeadline').value;
+  const status = document.getElementById('tStatus').value;
+  const progress = Number(document.getElementById('tProgress').value);
+  const notes = document.getElementById('tNotes').value.trim();
+
+  if(editingTaskId) {
+    const t = (m.tasks||[]).find(x => (x._id || x.id) == editingTaskId);
+    if(t) {
+      t.desc = desc;
+      t.description = desc;
+      t.assignee = assignee;
+      t.assigneeName = assignee;
+      t.priority = priority;
+      t.deadline = deadline;
+      t.status = status;
+      t.progress = progress;
+      t.notes = notes;
+
+      if (isBackendConnected && m._id) {
+        await apiCall(`/api/tasks/${m._id}/${t._id || editingTaskId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            description: desc,
+            assignee,
+            priority,
+            deadline,
+            status,
+            progress,
+            notes
+          })
+        });
+      }
+    }
+    showToast('Action item updated');
+  } else {
+    let newTask = null;
+    if (isBackendConnected && m._id) {
+      const res = await apiCall(`/api/tasks/${m._id}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          description: desc,
+          assignee,
+          priority,
+          deadline,
+          status,
+          progress,
+          notes
+        })
+      });
+      if (res && res._id) {
+        newTask = {
+          ...res,
+          id: res._id,
+          desc: res.description,
+          assignee: res.assigneeName || assignee
+        };
+      }
+    }
+
+    if (!newTask) {
+      newTask = {
+        id: Date.now(),
+        _id: String(Date.now()),
+        desc,
+        description: desc,
+        assignee,
+        assigneeName: assignee,
+        priority,
+        deadline,
+        status,
+        progress,
+        notes
+      };
+    }
+
+    if (!m.tasks) m.tasks = [];
+    m.tasks.push(newTask);
+
+    if(assignee !== activeUser) {
+      notifications.unshift({
+        title: 'New Task Assigned',
+        message: `${activeUser} assigned you: "${desc}" in "${m.title}"`,
+        time: 'Just now',
+        read: false,
+        meetingId: m._id || m.id
+      });
+    }
+    showToast('Action item added');
+  }
+
+  saveLocalState();
+  closeModal('taskModal');
+  renderAll();
+}
+
+// Decision Modal
+function openDecisionModal() {
+  document.getElementById('dText').value = '';
+  openModal('decisionModal');
+}
+
+async function saveDecisionModal() {
+  const val = document.getElementById('dText').value.trim();
+  if(!val) return;
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(m) {
+    if(!m.decisions) m.decisions = [];
+    m.decisions.push(val);
+    if (!m.history) m.history = [];
+    m.history.push({ action: 'Decision recorded', by: activeUser, at: today() });
+
+    if (isBackendConnected && m._id) {
+      await apiCall(`/api/meetings/${m._id}/decisions`, {
+        method: 'POST',
+        body: JSON.stringify({ text: val })
+      });
+    }
+
+    saveLocalState();
+    showToast('Team decision recorded!');
+  }
+  closeModal('decisionModal');
+  renderDetail(activeMeetingId);
+}
+
+// Insights Modal
+let currentInsTopic = null;
+function openInsightsModal() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m) return;
+  document.getElementById('insSub').textContent = `${m.title} · ${fmtDate(m.date)}`;
+  document.getElementById('insStep1').style.display = 'block';
+  document.getElementById('insStep2').style.display = 'none';
+  document.getElementById('saveInsBtn').style.display = 'none';
+
+  const topics = new Set();
+  (m.agenda||'').split('\n').forEach(line => {
+    const match = line.match(/^Topic[:\s]+(.+)/i);
+    if(match) topics.add(match[1].trim());
+    else if(line.trim()) topics.add(line.trim());
+  });
+  (m.insights||[]).forEach(i => topics.add(i.topic));
+
+  document.getElementById('insChips').innerHTML = [...topics].map(t => `
+    <button class="btn btn-ghost btn-sm" onclick="selectInsTopic('${t.replace(/'/g,"\\'")}')">${t}</button>
+  `).join('');
+
+  openModal('insightsModal');
+}
+
+function addCustomInsTopic() {
+  const val = document.getElementById('customInsTopic').value.trim();
+  if(!val) return;
+  selectInsTopic(val);
+}
+
+function selectInsTopic(top) {
+  currentInsTopic = top;
+  document.getElementById('insSelectedTopicTitle').textContent = `Topic: ${top}`;
+  document.getElementById('insStep1').style.display = 'none';
+  document.getElementById('insStep2').style.display = 'block';
+  document.getElementById('saveInsBtn').style.display = 'inline-flex';
+
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  const atts = m.attendeeNames && m.attendeeNames.length ? m.attendeeNames : (m.attendees || []).map(a => a.name || a);
+  const rows = atts.map(att => {
+    const existing = (m.insights||[]).find(i => i.topic === top && (i.authorName === att || i.author === att));
+    return `
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+        <div style="width:70px;flex-shrink:0;text-align:center">
+          <div class="avatar" style="${avatarStyle(att)};margin:0 auto 4px">${initials(att)}</div>
+          <div style="font-size:11px;font-weight:600">${att}</div>
+        </div>
+        <textarea class="form-textarea" id="ins_${att}" style="min-height:60px" placeholder="${att}'s viewpoint or proposal on this topic...">${existing?existing.text:''}</textarea>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('insRowsContainer').innerHTML = rows;
+}
+
+function backToInsStep1() {
+  document.getElementById('insStep1').style.display = 'block';
+  document.getElementById('insStep2').style.display = 'none';
+  document.getElementById('saveInsBtn').style.display = 'none';
+}
+
+async function saveAllInsights() {
+  const m = meetings.find(x => (x._id || x.id) == activeMeetingId);
+  if(!m || !currentInsTopic) return;
+  if(!m.insights) m.insights = [];
+
+  const atts = m.attendeeNames && m.attendeeNames.length ? m.attendeeNames : (m.attendees || []).map(a => a.name || a);
+
+  for (const att of atts) {
+    const el = document.getElementById(`ins_${att}`);
+    if(!el) continue;
+    const txt = el.value.trim();
+    if(!txt) continue;
+
+    m.insights = m.insights.filter(i => !(i.topic === currentInsTopic && (i.authorName === att || i.author === att)));
+    m.insights.push({ topic: currentInsTopic, author: att, authorName: att, text: txt, timestamp: today() });
+
+    if (isBackendConnected && m._id) {
+      await apiCall(`/api/insights/${m._id}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          topic: currentInsTopic,
+          text: txt,
+          author: att
+        })
+      });
+    }
+  }
+
+  saveLocalState();
+  closeModal('insightsModal');
+  showToast('Topic insights saved!');
+  renderDetail(activeMeetingId);
+}
+
+// Export CSV
+function exportTasksCSV() {
+  const tasks = allTasks();
+  if(!tasks.length) { showToast('No action items to export', 'error'); return; }
+
+  let csv = 'Description,Meeting,Assignee,Priority,Status,Progress,Deadline\n';
+  tasks.forEach(t => {
+    csv += `"${(t.desc||'').replace(/"/g, '""')}","${(t.meetingTitle||'').replace(/"/g, '""')}","${t.assignee}","${t.priority||'Medium'}","${t.status}","${t.progress||0}%","${t.deadline||''}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `meetrix_tasks_${today()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Tasks exported to CSV successfully!');
+}
+
+// Close modals when clicking overlay
+['meetingModal', 'editMeetingModal', 'cancelMeetingModal', 'taskModal', 'decisionModal', 'insightsModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if(e.target === this) closeModal(id);
+  });
+});
+
+// Bootstrapping
+initSeedData();
+syncFromBackend();
+</script>
+</body>
+</html>
