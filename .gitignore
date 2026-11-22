@@ -2,6 +2,19 @@
 # Meetrix — Comprehensive Git Ignore
 # ============================================================
 
+# Python & SQLite caches
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.db
+*.sqlite
+*.sqlite3
+.pytest_cache/
+.venv/
+venv/
+env/
+
 # Dependencies
 node_modules/
 **/node_modules/

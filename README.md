@@ -2,7 +2,11 @@
 
 A production-grade, full-stack meeting intelligence platform designed to transform discussions into decisions, decisions into action items, and action items into measurable outcomes.
 
-**Stack:** Vanilla JS / React Store · Node.js · Express · MongoDB (In-Memory + Atlas) · Anthropic Claude AI
+**Supported Stacks:**
+- **Python Backend:** Python 3.13 · FastAPI · Pydantic · SQLite · Uvicorn · Interactive Swagger `/docs`
+- **Node.js Backend:** Node.js · Express · Mongoose · MongoDB (In-Memory + Atlas)
+- **Frontend:** Responsive Web App · Kanban Board · Interactive AI Q&A · Dynamic Executive Analytics
+- **AI Engine:** Anthropic Claude 3.5 Sonnet + Built-in Local NLP Intelligence Engine
 
 ---
 
@@ -62,6 +66,24 @@ meetrix/
 │   ├── .env.example
 │   └── package.json
 │
+├── python_backend/                  # ★ Python FastAPI High-Performance Backend
+│   ├── main.py                      FastAPI app & static frontend mount
+│   ├── run.py                       One-click runner (port 5000)
+│   ├── config.py                    Environment settings & secrets
+│   ├── auth_utils.py                Pure-Python HS256 JWT & bcrypt security
+│   ├── db.py                        SQLite document store & auto-seeder
+│   ├── test_audit.py                Comprehensive 55-test automated audit suite
+│   ├── requirements.txt             Python dependencies
+│   └── routers/
+│       ├── auth.py                  Login, register, me
+│       ├── meetings.py              Meetings CRUD, recurring, cancel, duplicate, comments
+│       ├── tasks.py                 Action items & Kanban management
+│       ├── notifications.py         In-app notification center & deadline monitor
+│       ├── ai.py                    Smart summary, analysis, decision intel & Q&A
+│       ├── analytics.py             Executive dashboard & timeline analytics
+│       ├── search.py                Global search
+│       └── users.py                 User profiles & productivity stats
+│
 ├── backend/                         # Node.js + Express REST API
 │   ├── src/
 │   │   ├── server.js                Express app entry point & static file server
@@ -76,20 +98,17 @@ meetrix/
 │   │   │   └── User.js              User schema with bcrypt password hashing
 │   │   └── routes/
 │   │       ├── auth.js              POST /api/auth/register | /login
-│   │       ├── meetings.js          CRUD /api/meetings (reschedule, cancel, duplicate, comments)
-│   │       ├── tasks.js             CRUD /api/tasks (priority, status, progress, history)
+│   │       ├── meetings.js          CRUD /api/meetings
+│   │       ├── tasks.js             CRUD /api/tasks
 │   │       ├── insights.js          CRUD /api/insights
-│   │       ├── notifications.js     GET /api/notifications | PATCH /read | POST /read-all
-│   │       ├── ai.js                POST /api/ai/:id/(summary | analysis | decision-intel | ask)
+│   │       ├── notifications.js     GET /api/notifications | PATCH /read
+│   │       ├── ai.js                AI endpoints & local NLP fallback
 │   │       ├── search.js            GET /api/search?q=query
 │   │       ├── analytics.js         GET /api/analytics/dashboard
 │   │       └── users.js             GET /api/users/me | GET /api/users/:id/profile
+│   ├── test_audit.js                55-test automated audit runner
 │   ├── .env.example
 │   └── package.json
-│
-├── database/                        # Database migrations & seeds
-│   └── seeds/
-│       └── seed.js                  Manual seed script
 │
 ├── .gitignore
 └── README.md
@@ -99,17 +118,33 @@ meetrix/
 
 ## Quickstart
 
-### Start the Application (1 Command)
+### Option A: Run with Python (FastAPI — Recommended)
+
+```bash
+cd meetrix/python_backend
+python run.py
+```
+
+- **Web Application:** `http://localhost:5000`
+- **Interactive Swagger Documentation:** `http://localhost:5000/docs`
+- **ReDoc View:** `http://localhost:5000/redoc`
+- **Run Python Automated Audit (55/55 Tests):**
+  ```bash
+  python test_audit.py
+  ```
+
+### Option B: Run with Node.js (Express)
 
 ```bash
 cd meetrix/backend
 npm start
 ```
 
-Open your browser to:
-👉 **`http://localhost:5000`**
-
-*Both the Meetrix interface and the Express API run together with pre-loaded team profiles and meetings.*
+- **Web Application:** `http://localhost:5000`
+- **Run Node.js Automated Audit (55/55 Tests):**
+  ```bash
+  npm run audit
+  ```
 
 ---
 

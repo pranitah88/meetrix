@@ -1383,7 +1383,7 @@ async function syncFromBackend() {
   if (health && health.status === 'ok') {
     isBackendConnected = true;
     dot.className = 'status-dot';
-    txt.textContent = 'API Connected (MongoDB)';
+    txt.textContent = health.engine ? `API Connected (${health.engine})` : 'API Connected (MongoDB)';
 
     // Ensure logged in
     await loginUser(activeUser);
