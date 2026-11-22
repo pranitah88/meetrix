@@ -1,4 +1,4 @@
-# Meetrix 2.0 — Meeting Intelligence & Team Productivity Platform
+# Meetrix — Meeting Intelligence & Team Productivity Platform
 
 A production-grade, full-stack meeting intelligence platform designed to transform discussions into decisions, decisions into action items, and action items into measurable outcomes.
 
@@ -6,7 +6,7 @@ A production-grade, full-stack meeting intelligence platform designed to transfo
 
 ---
 
-## What's New in Meetrix 2.0
+## Features & Key Capabilities
 
 ### 1. Advanced Meeting Management
 * **Meeting Templates:** Instant agenda scaffolding for *Team Standup*, *Project Planning*, *Sprint Review*, *Brainstorming*, and *General Discussion*.
@@ -53,7 +53,7 @@ meetrix/
 │
 ├── frontend/                        # Frontend client
 │   ├── public/
-│   │   └── index.html               ★ Main Meetrix 2.0 application
+│   │   └── index.html               ★ Main Meetrix application
 │   ├── src/
 │   │   ├── api.js                   Axios instance with JWT interceptors
 │   │   └── store/
@@ -109,7 +109,7 @@ npm start
 Open your browser to:
 👉 **`http://localhost:5000`**
 
-*Both the Meetrix 2.0 interface and the Express API run together with pre-loaded team profiles and meetings.*
+*Both the Meetrix interface and the Express API run together with pre-loaded team profiles and meetings.*
 
 ---
 
@@ -138,7 +138,7 @@ All demo accounts use the default password **`password123`**:
 
 ## Database Architecture & Persistence
 
-Meetrix 2.0 supports dual database modes:
+Meetrix supports dual database modes:
 
 ### 1. In-Memory Mode (Zero-Setup Evaluation)
 * If `MONGO_URI` in `backend/.env` is omitted or empty, Meetrix automatically downloads and spins up an isolated, embedded MongoDB instance using `mongodb-memory-server`.
@@ -156,7 +156,7 @@ Meetrix 2.0 supports dual database modes:
 
 ## Presentation & Viva Reference Guide
 
-When presenting Meetrix 2.0 to evaluators or faculty, key design decisions to highlight include:
+When presenting Meetrix to evaluators or faculty, key design decisions to highlight include:
 
 1. **Embedded vs. Referenced Document Schema**:
    * *Meeting Schema* embeds `tasks`, `insights`, `decisions`, and `attendance` directly inside the meeting document because these entities are always queried and mutated in the context of a meeting. This minimizes database roundtrips and optimizes read performance.

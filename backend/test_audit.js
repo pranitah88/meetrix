@@ -86,7 +86,7 @@ function assert(condition, message) {
 async function runAudit() {
   await startTestServer();
   console.log('\n======================================================');
-  console.log('       MEETRIX 2.0 COMPREHENSIVE QUALITY AUDIT');
+  console.log('       MEETRIX COMPREHENSIVE QUALITY AUDIT');
   console.log('======================================================\n');
 
   let pranitaToken = '';

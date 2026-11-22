@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meetrix 2.0 — Meeting Intelligence & Team Productivity Platform</title>
+<title>Meetrix — Meeting Intelligence & Team Productivity Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -308,7 +308,7 @@
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 15V5L10 11L17 5V15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div>
-          <div class="logo-name">Meetrix <span class="version-tag">2.0</span></div>
+          <div class="logo-name">Meetrix</div>
           <div class="logo-sub">Intelligence Platform</div>
         </div>
       </div>
@@ -1187,7 +1187,7 @@ function showView(v) {
     'detail': ['Meeting Workspace', 'Collaborative notes, AI insights, and action items']
   };
 
-  const [t, s] = titles[v] || ['Meetrix 2.0', 'Meeting Intelligence'];
+  const [t, s] = titles[v] || ['Meetrix', 'Meeting Intelligence'];
   document.getElementById('pageTitle').textContent = t;
   document.getElementById('pageSubtitle').textContent = s;
   renderAll();
@@ -1196,18 +1196,18 @@ function showView(v) {
 // Local Storage Persistence Helpers
 function saveLocalState() {
   try {
-    localStorage.setItem('meetrix_2_meetings', JSON.stringify(meetings));
-    localStorage.setItem('meetrix_2_notifications', JSON.stringify(notifications));
+    localStorage.setItem('meetrix_meetings', JSON.stringify(meetings));
+    localStorage.setItem('meetrix_notifications', JSON.stringify(notifications));
   } catch(e) {}
 }
 
 // Seed Initial Data (Fallback)
 function initSeedData() {
-  const saved = localStorage.getItem('meetrix_2_meetings');
+  const saved = localStorage.getItem('meetrix_meetings');
   if (saved) {
     try {
       meetings = JSON.parse(saved);
-      const savedNotifs = localStorage.getItem('meetrix_2_notifications');
+      const savedNotifs = localStorage.getItem('meetrix_notifications');
       if (savedNotifs) notifications = JSON.parse(savedNotifs);
       return;
     } catch(e) {}
