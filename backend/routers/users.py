@@ -65,3 +65,4 @@ def get_user_profile(user_id: str, payload: Dict[str, Any] = Depends(get_current
     clean_user["assignedTasks"] = assigned_tasks
 
     return clean_user
+

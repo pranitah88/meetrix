@@ -74,3 +74,4 @@ if __name__ == "__main__":
     print(f"  Health Check:      http://localhost:{PORT}/api/health")
     print("=" * 60 + "\n")
     uvicorn.run("main:app", host=HOST, port=PORT, reload=False)
+

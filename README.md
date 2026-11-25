@@ -2,11 +2,10 @@
 
 A production-grade, full-stack meeting intelligence platform designed to transform discussions into decisions, decisions into action items, and action items into measurable outcomes.
 
-**Supported Stacks:**
-- **Python Backend:** Python 3.13 · FastAPI · Pydantic · SQLite · Uvicorn · Interactive Swagger `/docs`
-- **Node.js Backend:** Node.js · Express · Mongoose · MongoDB (In-Memory + Atlas)
-- **Frontend:** Responsive Web App · Kanban Board · Interactive AI Q&A · Dynamic Executive Analytics
-- **AI Engine:** Anthropic Claude 3.5 Sonnet + Built-in Local NLP Intelligence Engine
+**Stack:**
+- **Backend:** Python 3.13 · FastAPI · Pydantic · SQLite Document Engine · Uvicorn · Interactive Swagger `/docs`
+- **Frontend:** Responsive Single-Page Application · 3-Column Kanban Board · Context-Grounded AI Q&A · Dynamic Executive Analytics
+- **AI Intelligence:** Context-Grounded Local NLP Synthesis (Zero Setup / Zero Cost) + Optional Anthropic Claude 3.5 Sonnet Integration
 
 ---
 
@@ -57,19 +56,18 @@ meetrix/
 │
 ├── frontend/                        # Frontend client
 │   ├── public/
-│   │   └── index.html               ★ Main Meetrix application
+│   │   └── index.html               ★ Main Meetrix single-page web app
 │   ├── src/
-│   │   ├── api.js                   Axios instance with JWT interceptors
+│   │   ├── api.js                   API configuration
 │   │   └── store/
-│   │       ├── authStore.js         Zustand authentication state
-│   │       └── meetingStore.js      Zustand meeting & notification state
-│   ├── .env.example
+│   │       ├── authStore.js         Authentication state
+│   │       └── meetingStore.js      Meeting & notification state
 │   └── package.json
 │
-├── python_backend/                  # ★ Python FastAPI High-Performance Backend
+├── backend/                         # ★ Python FastAPI Backend
 │   ├── main.py                      FastAPI app & static frontend mount
 │   ├── run.py                       One-click runner (port 5000)
-│   ├── config.py                    Environment settings & secrets
+│   ├── config.py                    Environment settings & configuration
 │   ├── auth_utils.py                Pure-Python HS256 JWT & bcrypt security
 │   ├── db.py                        SQLite document store & auto-seeder
 │   ├── test_audit.py                Comprehensive 55-test automated audit suite
@@ -84,32 +82,6 @@ meetrix/
 │       ├── search.py                Global search
 │       └── users.py                 User profiles & productivity stats
 │
-├── backend/                         # Node.js + Express REST API
-│   ├── src/
-│   │   ├── server.js                Express app entry point & static file server
-│   │   ├── config/
-│   │   │   ├── db.js                MongoDB connection (In-Memory fallback + Atlas)
-│   │   │   └── seedHelper.js        Auto-seed logic for users & meetings
-│   │   ├── middleware/
-│   │   │   └── auth.js              JWT verification middleware
-│   │   ├── models/
-│   │   │   ├── Meeting.js           Meeting schema (embedded tasks, insights, comments)
-│   │   │   ├── Notification.js      Notification schema
-│   │   │   └── User.js              User schema with bcrypt password hashing
-│   │   └── routes/
-│   │       ├── auth.js              POST /api/auth/register | /login
-│   │       ├── meetings.js          CRUD /api/meetings
-│   │       ├── tasks.js             CRUD /api/tasks
-│   │       ├── insights.js          CRUD /api/insights
-│   │       ├── notifications.js     GET /api/notifications | PATCH /read
-│   │       ├── ai.js                AI endpoints & local NLP fallback
-│   │       ├── search.js            GET /api/search?q=query
-│   │       ├── analytics.js         GET /api/analytics/dashboard
-│   │       └── users.js             GET /api/users/me | GET /api/users/:id/profile
-│   ├── test_audit.js                55-test automated audit runner
-│   ├── .env.example
-│   └── package.json
-│
 ├── .gitignore
 └── README.md
 ```
@@ -118,26 +90,25 @@ meetrix/
 
 ## Quickstart
 
-### Option A: Run with Python (FastAPI — Recommended)
-
-```bash
-cd meetrix/python_backend
-python run.py
-```
-
-- **Web Application:** `http://localhost:5000`
-- **Interactive Swagger Documentation:** `http://localhost:5000/docs`
-- **ReDoc View:** `http://localhost:5000/redoc`
-- **Run Python Automated Audit (55/55 Tests):**
-  ```bash
-  python test_audit.py
-  ```
-
-### Option B: Run with Node.js (Express)
+### 1. Start Meetrix (1 Command)
 
 ```bash
 cd meetrix/backend
-npm start
+python run.py
+```
+
+Open your browser to:
+- 👉 **Web Application:** `http://localhost:5000`
+- 👉 **Interactive Swagger API Docs:** `http://localhost:5000/docs`
+- 👉 **ReDoc API Reference:** `http://localhost:5000/redoc`
+
+*Both the frontend application and the Python FastAPI backend are served together on port 5000 with pre-seeded demo accounts and sample meetings.*
+
+### 2. Run the Comprehensive Quality Audit (55/55 Tests Passing)
+
+```bash
+cd meetrix/backend
+python test_audit.py
 ```
 
 - **Web Application:** `http://localhost:5000`
@@ -164,28 +135,20 @@ All demo accounts use the default password **`password123`**:
 | **Siddharth** | `siddharth@meetrix.dev` | Database Engineer | Infrastructure | Schema & Index Metrics |
 
 ### Security Measures Implemented:
-* **Password Hashing**: Passwords are encrypted with `bcryptjs` (10 salt rounds) before database storage.
-* **Sensitive Data Scrubbing**: User schemas implement a custom `.toJSON()` method that permanently strips `password` fields from API responses.
-* **Input Sanitization**: User-supplied search queries are sanitized against regex injection using `escapeRegex()`.
+* **Password Hashing**: Passwords are encrypted with standard `bcrypt` (10 salt rounds) before database storage.
+* **Sensitive Data Scrubbing**: User serializers permanently strip `password` hashes from API response payloads.
+* **Pure Python JWT**: Standard-compliant HS256 JWT tokens using cryptographic primitives (`hmac`, `hashlib`, `base64`) with configurable expiration.
 * **Safe AI Integration**: Server-side Claude API requests keep API keys protected on the backend; keys are never transmitted to frontend clients.
 
 ---
 
 ## Database Architecture & Persistence
 
-Meetrix supports dual database modes:
-
-### 1. In-Memory Mode (Zero-Setup Evaluation)
-* If `MONGO_URI` in `backend/.env` is omitted or empty, Meetrix automatically downloads and spins up an isolated, embedded MongoDB instance using `mongodb-memory-server`.
-* **Persistence Behavior**: All changes persist across client page refreshes because the frontend automatically syncs changes between the REST API and browser `localStorage`.
-* **Limitation**: When the Node.js backend server process terminates, the temporary in-memory database is reset. On the next boot, initial demo meetings and users are re-seeded automatically.
-
-### 2. Production Mode (MongoDB Atlas / Persistent Cluster)
-* To persist data indefinitely across server restarts, supply a standard MongoDB connection string in `backend/.env`:
-  ```env
-  MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/meetrix?retryWrites=true&w=majority
-  ```
-* In production mode, all session notes, action items, attendance logs, and discussion threads are permanently committed to your cloud cluster.
+Meetrix uses a local, high-performance **SQLite Document Engine** (`backend/meetrix.db`):
+* **Zero-Setup Out of the Box**: No external database daemon (like MongoDB or PostgreSQL) is required. Everything runs locally and immediately.
+* **Automatic Seeding**: Seeds the 5 demo accounts and sample meetings on the very first startup.
+* **Persistent Storage**: Changes (meetings created, Kanban moves, comments, attendance, notes) automatically persist across server restarts in `backend/meetrix.db`.
+* **Clean Git Integration**: Database binary files (`*.db`) are ignored in `.gitignore`, keeping version control lightweight and secure.
 
 ---
 
@@ -193,21 +156,22 @@ Meetrix supports dual database modes:
 
 When presenting Meetrix to evaluators or faculty, key design decisions to highlight include:
 
-1. **Embedded vs. Referenced Document Schema**:
-   * *Meeting Schema* embeds `tasks`, `insights`, `decisions`, and `attendance` directly inside the meeting document because these entities are always queried and mutated in the context of a meeting. This minimizes database roundtrips and optimizes read performance.
-   * *User Schema* is maintained as an independent referenced collection so profiles, roles, and avatar metadata can be reused across meetings without duplication.
+1. **Modern Python FastAPI Framework**:
+   * Blazingly fast asynchronous execution with type validation powered by Pydantic.
+   * Auto-generated interactive Swagger UI at `/docs` and ReDoc at `/redoc` for live endpoint testing during presentations.
 
 2. **Dual-Mode AI Intelligence Architecture**:
    * If `ANTHROPIC_API_KEY` is present, Meetrix connects securely to Anthropic's Claude 3.5 Sonnet to synthesize discussion consensus and structured summaries.
    * If `ANTHROPIC_API_KEY` is absent, Meetrix automatically engages its deterministic local NLP synthesis engine. Evaluators get complete, structured meeting summaries, rationales, and context-grounded Q&A with zero external API costs or service dependencies. Every AI response includes a transparent `_meta` object stating the engine used.
 
 3. **Idempotent Notification Reminders**:
-   * Automated deadline detection runs on notification polling, checking for tasks due within 48 hours or overdue. Unique compound indices and query deduplication guarantee that reminders are never duplicated regardless of how many times a user refreshes or polls.
+   * Automated deadline detection runs on notification polling, checking for tasks due within 48 hours or overdue. Deduplication logic guarantees that reminders are never duplicated regardless of how many times a user refreshes or polls.
 
 4. **Automated Verification Suite**:
    * The application includes a self-contained test suite with 55 automated assertions covering auth, meetings, tasks, notifications, AI synthesis, and analytics:
      ```bash
-     npm run audit
+     cd backend
+     python test_audit.py
      ```
 
 ---

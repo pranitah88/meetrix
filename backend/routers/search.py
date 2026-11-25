@@ -70,3 +70,4 @@ def global_search(
         "decisions": matched_decisions,
         "users": matched_users
     }
+

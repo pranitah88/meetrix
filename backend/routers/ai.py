@@ -271,3 +271,4 @@ def get_effectiveness_insights(payload: Dict[str, Any] = Depends(get_current_use
             "taskClosureRate": f"{completion_rate}%"
         }
     }
+

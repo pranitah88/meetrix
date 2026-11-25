@@ -89,3 +89,4 @@ def get_me(payload: Dict[str, Any] = Depends(get_current_user_payload)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return sanitize_user(user)
+

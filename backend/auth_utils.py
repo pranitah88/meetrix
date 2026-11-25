@@ -110,3 +110,4 @@ def get_current_user_payload(authorization: Optional[str] = Header(None)) -> Dic
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid or expired token: {str(e)}"
         )
+
